@@ -1,2 +1,2 @@
-# code
-Code for the robot
+# Code
+The code for the robot
