@@ -1,3 +1,7 @@
+# Code
+The code for the robot, commited inside of the SDK.
+
+
 # ftc_app
 FTC Android Studio project to create FTC Robot Controller app.
 
