@@ -48,10 +48,6 @@ public class Auto_Blue extends LinearOpMode {
     HardwareTestDrive       robot   = new HardwareTestDrive();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
-
-//    static final double     FORWARD_SPEED = 0.6;
-//    static final double     TURN_SPEED    = 0.5;
-
     @Override
     public void runOpMode() {
 
@@ -142,22 +138,5 @@ public class Auto_Blue extends LinearOpMode {
 
         sleep(1000);
 
-
- /*       // Drive forward for 3 seconds
-        robot.leftMotorF.setPower(0.2);
-        robot.leftMotorB.setPower(0.2);
-        robot.rightMotorF.setPower(0.2);
-        robot.rightMotorB.setPower(0.2);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-        robot.leftMotorF.setPower(0.0);
-        robot.leftMotorB.setPower(0.0);
-        robot.rightMotorF.setPower(0.0);
-        robot.rightMotorB.setPower(0.0);
-
-        sleep(1000);
-   */ }
+    }
 }
