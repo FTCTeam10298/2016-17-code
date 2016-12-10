@@ -59,10 +59,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Auto Red", group="Pushbot")
 //@Disabled
-public class AutoDrive extends LinearOpMode {
+public class Auto_Red extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareTestDrive         robot   = new HardwareTestDrive();   // Use a Pushbot's hardware
+    HardwareTestDrive       robot   = new HardwareTestDrive();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
 
@@ -96,7 +96,7 @@ public class AutoDrive extends LinearOpMode {
         robot.armMotor.setPower(0);
 
         robot.launchingMotor.setPower(-.5);
-        sleep(147 0);
+        sleep(1470);
         robot.launchingMotor.setPower(0);
 
         robot.armMotor.setPower(.05);
