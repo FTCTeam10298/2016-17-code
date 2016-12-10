@@ -7,19 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This is NOT an opmode.
- *
- * This class can be used to define all the specific hardware for a single robot.
- * In this case that robot is a Pushbot.
- * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
- *
- * This hardware class assumes the following device names have been configured on the robot:
- * Note:  All names are lower case and some have single spaces between words.
- *
- * Motor channel:  Left  drive motor:        "left_drive"
- * Motor channel:  Right drive motor:        "right_drive"
- * Motor channel:  Manipulator drive motor:  "left_arm"
- * Servo channel:  Servo to open left claw:  "left_hand"
- * Servo channel:  Servo to open right claw: "right_hand"
+ * This class is used to define all the specific hardware for a single robot.
  */
 public class HardwareTestDrive
 {
@@ -33,10 +21,6 @@ public class HardwareTestDrive
     public DcMotor  armMotor  = null;
 
     public Servo claw    = null;
-
-    public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -63,10 +47,10 @@ public class HardwareTestDrive
 
 
 //        armMotor    = hwMap.dcMotor.get("left_arm");
-        leftMotorF.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        leftMotorB.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        rightMotorF.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        rightMotorB.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        leftMotorF.setDirection(DcMotor.Direction.REVERSE);
+        leftMotorB.setDirection(DcMotor.Direction.REVERSE);
+        rightMotorF.setDirection(DcMotor.Direction.FORWARD);
+        rightMotorB.setDirection(DcMotor.Direction.FORWARD);
 
         launchingMotor.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -80,16 +64,15 @@ public class HardwareTestDrive
         launchingMotor.setPower(0);
         armMotor.setPower(0);
 
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
+        // Set almost all motors to run with encoders.
         leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        launchingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // This one does not have an encoder yet. :(
+        launchingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize ALL installed servos.
         claw = hwMap.servo.get("claw");

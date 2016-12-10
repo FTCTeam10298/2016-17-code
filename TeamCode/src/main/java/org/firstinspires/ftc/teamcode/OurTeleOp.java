@@ -52,9 +52,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TestDrive: Teleop", group="Pushbot")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="OurTeleOp: Teleop", group="Pushbot")
 //@Disabled
-public class TestDrive extends OpMode{
+public class OurTeleOp extends OpMode {
 
     /* Declare OpMode members. */
     HardwareTestDrive robot       = new HardwareTestDrive(); // use the class created to define a Pushbot's hardware

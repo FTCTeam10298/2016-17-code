@@ -36,25 +36,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/**
- * This file illustrates the concept of driving a path based on time.
- * It uses the common Pushbot hardware class to define the drive on the robot.
- * The code is structured as a LinearOpMode
- *
- * The code assumes that you do NOT have encoders on the wheels,
- *   otherwise you would use: PushbotAutoDriveByEncoder;
- *
- *   The desired path in this example is:
- *   - Drive forward for 3 seconds
- *   - Spin right for 1.3 seconds
- *   - Drive Backwards for 1 Second
- *   - Stop and close the claw.
- *
- *  The code is written in a simple form with no optimizations.
- *  However, there are several ways that this type of sequence could be streamlined,
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ /*
+ *  Autonomous program for Red alliance
  */
 
 @Autonomous(name="Auto Red", group="Pushbot")
@@ -65,10 +48,6 @@ public class Auto_Red extends LinearOpMode {
     HardwareTestDrive       robot   = new HardwareTestDrive();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
-
-    static final double     FORWARD_SPEED = 0.6;
-    static final double     TURN_SPEED    = 0.5;
-
     @Override
     public void runOpMode() {
 
@@ -78,10 +57,10 @@ public class Auto_Red extends LinearOpMode {
          */
         robot.init(hardwareMap);
 
-        // claw init
+        // Clamp the Cool Claw's Clampers
         robot.claw.setPosition(.3);
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
+        // Send telemetry message to signify robot waiting
+        telemetry.addData("Status", "Ready to run");
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -89,12 +68,11 @@ public class Auto_Red extends LinearOpMode {
 
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
-        //Nutn but net
-
         robot.armMotor.setPower(-.05);
         sleep(1000);
         robot.armMotor.setPower(0);
 
+        //Nutn but net
         robot.launchingMotor.setPower(-.5);
         sleep(1470);
         robot.launchingMotor.setPower(0);
@@ -119,6 +97,7 @@ public class Auto_Red extends LinearOpMode {
         robot.armMotor.setPower(0);
         sleep(500);
 
+        //Nutn but net
         robot.launchingMotor.setPower(-.5);
         sleep(1470);
         robot.launchingMotor.setPower(0);
@@ -160,22 +139,5 @@ public class Auto_Red extends LinearOpMode {
 
         sleep(1000);
 
-
- /*       // Drive forward for 3 seconds
-        robot.leftMotorF.setPower(0.2);
-        robot.leftMotorB.setPower(0.2);
-        robot.rightMotorF.setPower(0.2);
-        robot.rightMotorB.setPower(0.2);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 3.0)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
-        robot.leftMotorF.setPower(0.0);
-        robot.leftMotorB.setPower(0.0);
-        robot.rightMotorF.setPower(0.0);
-        robot.rightMotorB.setPower(0.0);
-
-        sleep(1000);
-   */ }
+    }
 }
