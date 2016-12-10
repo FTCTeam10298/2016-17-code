@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *  Autonomous program for Red alliance
  */
 
-@Autonomous(name="Auto Red", group="Pushbot")
+@Autonomous(name="Auto Red", group="Ourbot")
 //@Disabled
 public class Auto_Red extends LinearOpMode {
 
