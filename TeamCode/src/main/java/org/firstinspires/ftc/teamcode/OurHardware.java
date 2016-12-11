@@ -9,25 +9,26 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * This is NOT an opmode.
  * This class is used to define all the specific hardware for a single robot.
  */
-public class HardwareTestDrive
+
+public class OurHardware
 {
     /* Public OpMode members. */
-    public DcMotor  leftMotorF   = null;
-    public DcMotor  leftMotorB   = null;
-    public DcMotor  rightMotorF  = null;
-    public DcMotor  rightMotorB  = null;
+    public DcMotor  leftMotorF      = null;
+    public DcMotor  leftMotorB      = null;
+    public DcMotor  rightMotorF     = null;
+    public DcMotor  rightMotorB     = null;
 
     public DcMotor  launchingMotor  = null;
-    public DcMotor  armMotor  = null;
+    public DcMotor  armMotor        = null;
 
-    public Servo claw    = null;
+    public Servo    claw            = null;
 
     /* local OpMode members. */
-    HardwareMap hwMap           =  null;
-    private ElapsedTime period  = new ElapsedTime();
+    HardwareMap hwMap               = null;
+    private ElapsedTime period      = new ElapsedTime();
 
     /* Constructor */
-    public HardwareTestDrive(){
+    public OurHardware() {
 
     }
 
@@ -37,16 +38,15 @@ public class HardwareTestDrive
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftMotorF   = hwMap.dcMotor.get("left_drive_front");
-        leftMotorB   = hwMap.dcMotor.get("left_drive_back");
-        rightMotorF  = hwMap.dcMotor.get("right_drive_front");
-        rightMotorB  = hwMap.dcMotor.get("right_drive_back");
+        leftMotorF      = hwMap.dcMotor.get("left_drive_front");
+        leftMotorB      = hwMap.dcMotor.get("left_drive_back");
+        rightMotorF     = hwMap.dcMotor.get("right_drive_front");
+        rightMotorB     = hwMap.dcMotor.get("right_drive_back");
 
-        launchingMotor = hwMap.dcMotor.get("launching_motor");
-        armMotor = hwMap.dcMotor.get("arm_motor");
+        launchingMotor  = hwMap.dcMotor.get("launching_motor");
+        armMotor        = hwMap.dcMotor.get("arm_motor");
 
 
-//        armMotor    = hwMap.dcMotor.get("left_arm");
         leftMotorF.setDirection(DcMotor.Direction.REVERSE);
         leftMotorB.setDirection(DcMotor.Direction.REVERSE);
         rightMotorF.setDirection(DcMotor.Direction.FORWARD);
@@ -74,13 +74,12 @@ public class HardwareTestDrive
         // This one does not have an encoder yet. :(
         launchingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Define and initialize ALL installed servos.
+        // Define and initialize all installed servos.
         claw = hwMap.servo.get("claw");
         claw.setPosition(0.24);
     }
 
-    /***
-     *
+    /*
      * waitForTick implements a periodic delay. However, this acts like a metronome with a regular
      * periodic tick.  This is used to compensate for varying processing times for each cycle.
      * The function looks at the elapsed cycle time, and sleeps for the remaining time interval.

@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
- /*
+/**
  *  Autonomous program for Blue alliance
  */
 
@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Auto_Blue extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareTestDrive       robot   = new HardwareTestDrive();   // Use a Pushbot's hardware
+    OurHardware robot   = new OurHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     @Override
@@ -97,6 +97,7 @@ public class Auto_Blue extends LinearOpMode {
         robot.armMotor.setPower(0);
         sleep(500);
 
+        //Nutn but net
         robot.launchingMotor.setPower(-.5);
         sleep(1470);
         robot.launchingMotor.setPower(0);

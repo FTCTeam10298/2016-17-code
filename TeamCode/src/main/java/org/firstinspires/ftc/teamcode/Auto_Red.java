@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
- /*
+/**
  *  Autonomous program for Red alliance
  */
 
@@ -45,7 +45,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Auto_Red extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareTestDrive       robot   = new HardwareTestDrive();   // Use a Pushbot's hardware
+    OurHardware robot   = new OurHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     @Override
