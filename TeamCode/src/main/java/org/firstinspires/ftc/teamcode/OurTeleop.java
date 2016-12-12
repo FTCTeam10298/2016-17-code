@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Robert Atkinson
+Copyright (c) 2016 Robert Atkinson (original code for Pushbot), FTC team #10298 Brain Stormz (making it fit our bot)
 
 All rights reserved.
 
@@ -248,28 +248,7 @@ public class OurTeleop extends OpMode {
 
     robot.claw.setPosition(clawposition);
 
-        /*
-        // Use gamepad left & right Bumpers to open and close the claw
-        if (gamepad1.right_bumper)
-            clawOffset += CLAW_SPEED;
-        else if (gamepad1.left_bumper)
-            clawOffset -= CLAW_SPEED;
-
-        // Move both servos to new position.  Assume servos are mirror image of each other.
-        clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-        robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
-        robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
-
-        // Use gamepad buttons to move the arm up (Y) and down (A)
-        if (gamepad1.y)
-            robot.armMotor.setPower(robot.ARM_UP_POWER);
-        else if (gamepad1.a)
-            robot.armMotor.setPower(robot.ARM_DOWN_POWER);
-        else
-            robot.armMotor.setPower(0.0);
-        */
-
-        // Send telemetry message to signify robot running;
+        // Send telemetry message to signify robot running
         telemetry.addData("claw position",  "Offset = %.2f", robot.claw.getPosition());
         telemetry.addData("arm target",  "%d", armposition);
         telemetry.addData("arm encoder", "%d %d", robot.armMotor.getCurrentPosition(), robot.armMotor.getMaxSpeed());

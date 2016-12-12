@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2016 Robert Atkinson
+Copyright (c) 2016 Robert Atkinson (original code for Pushbot), FTC team #10298 Brain Stormz (making it fit our bot)
 
 All rights reserved.
 
