@@ -244,9 +244,28 @@ public class OurTeleop extends OpMode {
             clawposition = clawposition - 0.005;
 
         }
+
+        if (gamepad2.right_bumper) {
+            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.armMotor.setTargetPosition(100);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setPower(-0.5);
+            // while (robot.armMotor.isBusy());
+            // robot.armMotor.setPower(0);
+        }
+
+        if (gamepad2.left_bumper) {
+            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.armMotor.setTargetPosition(0);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setPower(0.5);
+            // while (robot.armMotor.isBusy());
+            // robot.armMotor.setPower(0);
+        }
+
         clawposition = Range.clip(clawposition, 0.0, 0.3);
 
-    robot.claw.setPosition(clawposition);
+        robot.claw.setPosition(clawposition);
 
         // Send telemetry message to signify robot running
         telemetry.addData("claw position",  "Offset = %.2f", robot.claw.getPosition());
