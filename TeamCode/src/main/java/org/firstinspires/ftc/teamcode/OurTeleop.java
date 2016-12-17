@@ -142,19 +142,19 @@ public class OurTeleop extends OpMode {
             robot.rightMotorB.setPower(-SideDriveR);
         }
         //END OF SIDE DRIVE
+        else {
+            // START OF TANK DRIVE
+            LF_y = (gamepad1.left_stick_y / 2.0);
+            LB_y = (gamepad1.left_stick_y / 2.0);
+            RF_y = (gamepad1.right_stick_y / 2.0);
+            RB_y = (gamepad1.right_stick_y / 2.0);
 
-        // START OF TANK DRIVE
-        LF_y = (gamepad1.left_stick_y / 2.0);
-        LB_y = (gamepad1.left_stick_y / 2.0);
-        RF_y = (gamepad1.right_stick_y / 2.0);
-        RB_y = (gamepad1.right_stick_y / 2.0);
-
-        robot.leftMotorF.setPower(LF_y);
-        robot.leftMotorB.setPower(LB_y);
-        robot.rightMotorF.setPower(RF_y);
-        robot.rightMotorB.setPower(RB_y);
-        // END OF TANK DRIVE
-
+            robot.leftMotorF.setPower(LF_y);
+            robot.leftMotorB.setPower(LB_y);
+            robot.rightMotorF.setPower(RF_y);
+            robot.rightMotorB.setPower(RB_y);
+            // END OF TANK DRIVE
+        }
         /*
         // START OF MECANUM DRIVE
         //(note: The joystick goes negative when pushed forwards, so negate it)
@@ -215,35 +215,43 @@ public class OurTeleop extends OpMode {
 
         //Launching Arm Code And Claw Arm Code
         launchPower = (gamepad2.left_stick_y);
-        armPower = (gamepad2.right_stick_y);
-        if (armPower > 0.15)
+        if (gamepad2.right_stick_y > 0.15) {
             armPower = 0.15;
-        else if (armPower < -0.15)
+            robot.armMotor.setMode(RUN_USING_ENCODER);
+            robot.armMotor.setPower(armPower);
+        } else if (gamepad2.right_stick_y < -0.15){
             armPower = -0.15;
-        else if (robot.armMotor.getMode() == RUN_USING_ENCODER)
-            armPower = 0.0;
-        /*
-        if (armPower > 0.1)
-        {
-            armposition = armposition + 1;
-        }
-
-        if (armPower < -0.1)
-        {
-            armposition = armposition - 1;
-        }
-        armposition = Range.clip(armposition, -10, 400);
-        robot.armMotor.setTargetPosition(armposition);
-        */
-
-        if (gamepad2.right_stick_y > 0.1) {
             robot.armMotor.setMode(RUN_USING_ENCODER);
             robot.armMotor.setPower(armPower);
         }
-        if (gamepad2.right_stick_y < -0.1) {
-            robot.armMotor.setMode(RUN_USING_ENCODER);
-            robot.armMotor.setPower(armPower);
+        else if (robot.armMotor.getMode() == RUN_USING_ENCODER) {
+            robot.armMotor.setPower(0.0);
         }
+
+        if(gamepad2.x) {
+            robot.armMotor.setMode(RUN_USING_ENCODER);
+            robot.armMotor.setPower(0.0);
+        }
+
+        if (gamepad2.right_bumper) {
+            robot.armMotor.setPower(0.0);
+            robot.armMotor.setTargetPosition(2400);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setPower(-0.5);
+            // while (robot.armMotor.isBusy());
+            // robot.armMotor.setPower(0);
+        }
+
+        if (gamepad2.left_bumper) {
+            robot.armMotor.setPower(0.0);
+            robot.armMotor.setTargetPosition(0);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setPower(0.5);
+            // while (robot.armMotor.isBusy());
+            // robot.armMotor.setPower(0);
+        }
+
+
         robot.launchingMotor.setPower(launchPower);
         /*
         if (gamepad2.right_bumper) {
@@ -266,24 +274,6 @@ public class OurTeleop extends OpMode {
         {
             clawposition = clawposition - 0.005;
 
-        }
-
-        if (gamepad2.right_bumper) {
-            robot.armMotor.setPower(0.0);
-            robot.armMotor.setTargetPosition(500);
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.armMotor.setPower(-0.5);
-            // while (robot.armMotor.isBusy());
-            // robot.armMotor.setPower(0);
-        }
-
-        if (gamepad2.left_bumper) {
-            robot.armMotor.setPower(0.0);
-            robot.armMotor.setTargetPosition(0);
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.armMotor.setPower(0.5);
-            // while (robot.armMotor.isBusy());
-            // robot.armMotor.setPower(0);
         }
 
         clawposition = Range.clip(clawposition, 0.0, 0.3);
