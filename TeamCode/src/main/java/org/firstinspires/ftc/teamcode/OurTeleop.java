@@ -36,6 +36,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
+
 /**
  * This file provides basic Telop driving for our robot.
  * The code is structured as an Iterative OpMode
@@ -66,7 +68,7 @@ public class OurTeleop extends OpMode {
         robot.init(hardwareMap);
         robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.armMotor.setMode(RUN_USING_ENCODER);
 //        robot.armMotor.setTargetPosition(0);
         robot.armMotor.setPower(0.0);
 //        robot.armMotor.setMaxSpeed(1000);
@@ -128,13 +130,12 @@ public class OurTeleop extends OpMode {
         //START OF SIDE DRIVE
         double SideDriveL = gamepad1.left_trigger;
         double SideDriveR = gamepad1.right_trigger;
-        if (SideDriveL > 0.1){
+        if (SideDriveL > 0.1) {
             robot.leftMotorF.setPower(SideDriveL);
             robot.leftMotorB.setPower(-SideDriveL);
             robot.rightMotorF.setPower(-SideDriveL);
             robot.rightMotorB.setPower(SideDriveL);
-        }
-        else if(SideDriveR > 0.1){
+        } else if (SideDriveR > 0.1) {
             robot.leftMotorF.setPower(-SideDriveR);
             robot.leftMotorB.setPower(SideDriveR);
             robot.rightMotorF.setPower(SideDriveR);
@@ -215,11 +216,11 @@ public class OurTeleop extends OpMode {
         //Launching Arm Code And Claw Arm Code
         launchPower = (gamepad2.left_stick_y);
         armPower = (gamepad2.right_stick_y);
-        if (armPower > 0.05)
-            armPower = 0.05;
-        else if(armPower < -0.05)
-            armPower = -0.05;
-        else
+        if (armPower > 0.15)
+            armPower = 0.15;
+        else if (armPower < -0.15)
+            armPower = -0.15;
+        else if (robot.armMotor.getMode() == RUN_USING_ENCODER)
             armPower = 0.0;
         /*
         if (armPower > 0.1)
@@ -235,12 +236,12 @@ public class OurTeleop extends OpMode {
         robot.armMotor.setTargetPosition(armposition);
         */
 
-        if (gamepad2.right_stick_y > 10) {
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (gamepad2.right_stick_y > 0.1) {
+            robot.armMotor.setMode(RUN_USING_ENCODER);
             robot.armMotor.setPower(armPower);
         }
-        if (gamepad2.right_stick_y < 10) {
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (gamepad2.right_stick_y < -0.1) {
+            robot.armMotor.setMode(RUN_USING_ENCODER);
             robot.armMotor.setPower(armPower);
         }
         robot.launchingMotor.setPower(launchPower);
@@ -268,8 +269,8 @@ public class OurTeleop extends OpMode {
         }
 
         if (gamepad2.right_bumper) {
-            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.armMotor.setTargetPosition(100);
+            robot.armMotor.setPower(0.0);
+            robot.armMotor.setTargetPosition(500);
             robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.armMotor.setPower(-0.5);
             // while (robot.armMotor.isBusy());
@@ -277,7 +278,7 @@ public class OurTeleop extends OpMode {
         }
 
         if (gamepad2.left_bumper) {
-            robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.armMotor.setPower(0.0);
             robot.armMotor.setTargetPosition(0);
             robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.armMotor.setPower(0.5);
