@@ -33,7 +33,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
@@ -125,6 +124,23 @@ public class OurTeleop extends OpMode {
         double launchPower;
 
         boolean RightBumper;
+
+        //START OF SIDE DRIVE
+        double SideDriveL = gamepad1.left_trigger;
+        double SideDriveR = gamepad1.right_trigger;
+        if (SideDriveL > 0.1){
+            robot.leftMotorF.setPower(SideDriveL);
+            robot.leftMotorB.setPower(-SideDriveL);
+            robot.rightMotorF.setPower(-SideDriveL);
+            robot.rightMotorB.setPower(SideDriveL);
+        }
+        else if(SideDriveR > 0.1){
+            robot.leftMotorF.setPower(-SideDriveR);
+            robot.leftMotorB.setPower(SideDriveR);
+            robot.rightMotorF.setPower(SideDriveR);
+            robot.rightMotorB.setPower(-SideDriveR);
+        }
+        //END OF SIDE DRIVE
 
         // START OF TANK DRIVE
         LF_y = (gamepad1.left_stick_y / 2.0);
