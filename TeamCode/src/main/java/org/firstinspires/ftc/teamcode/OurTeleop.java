@@ -235,9 +235,15 @@ public class OurTeleop extends OpMode {
         robot.armMotor.setTargetPosition(armposition);
         */
 
+        if (gamepad2.right_stick_y > 10) {
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.armMotor.setPower(armPower);
+        }
+        if (gamepad2.right_stick_y < 10) {
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.armMotor.setPower(armPower);
+        }
         robot.launchingMotor.setPower(launchPower);
-        robot.armMotor.setPower(armPower);
-
         /*
         if (gamepad2.right_bumper) {
             robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
