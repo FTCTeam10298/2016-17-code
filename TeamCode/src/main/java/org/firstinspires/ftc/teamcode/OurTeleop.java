@@ -199,9 +199,9 @@ public class OurTeleop extends OpMode {
         //Launching Arm Code And Claw Arm Code
         launchPower = (gamepad2.left_stick_y);
         armPower = (gamepad2.right_stick_y);
-        if (armPower > 0.1)
+        if (armPower > 0.05)
             armPower = 0.05;
-        else if(armPower < -0.1)
+        else if(armPower < -0.05)
             armPower = -0.05;
         else
             armPower = 0.0;
