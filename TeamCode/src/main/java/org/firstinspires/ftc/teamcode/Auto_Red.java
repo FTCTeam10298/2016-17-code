@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -57,27 +58,49 @@ public class Auto_Red extends LinearOpMode {
          */
         robot.init(hardwareMap);
 
-        // Clamp the Cool Claw's Clampers
+        // claw init
         robot.claw.setPosition(.3);
-        // Send telemetry message to signify robot waiting
-        telemetry.addData("Status", "Ready to run");
+        // Send telemetry message to signify robot waiting;
+        telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
+
+        robot.init(hardwareMap);
+        robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.armMotor.setTargetPosition(0);
+        robot.armMotor.setPower(0.0);
+        robot.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        robot.init(hardwareMap);
+        robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.launchingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.launchingMotor.setTargetPosition(0);
+        robot.launchingMotor.setPower(0.0);
+//        robot.armMotor.setMaxSpeed(1000);
+//        robot.armMotor.setMaxSpeed(1000);
+
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
-        robot.armMotor.setPower(-.05);
+        //Nutn but net
+
+        robot.armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.armMotor.setPower(.1);
         sleep(1000);
         robot.armMotor.setPower(0);
 
-        //Nutn but net
-        robot.launchingMotor.setPower(-.5);
-        sleep(1470);
-        robot.launchingMotor.setPower(0);
+        robot.launchingMotor.setTargetPosition(3350);
+        robot.launchingMotor.setPower(.5);
+        while (robot.launchingMotor.isBusy()) {
+            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
+            telemetry.update();
+        }
+        robot.launchingMotor.setPower(0.0);
 
-        robot.armMotor.setPower(.05);
+        robot.armMotor.setPower(-.1);
         sleep(1100);
         robot.armMotor.setPower(0);
 
@@ -85,23 +108,25 @@ public class Auto_Red extends LinearOpMode {
         robot.claw.setPosition(0);
         sleep(500);
 
-        robot.armMotor.setPower(-.05);
+        robot.armMotor.setPower(.1);
         sleep(1000);
         robot.claw.setPosition(0.15);
         sleep(100);
 
-        robot.armMotor.setPower(.1);
+        robot.armMotor.setPower(-.2);
         sleep(700);
-        robot.armMotor.setPower(-.1);
+        robot.armMotor.setPower(.2);
         sleep(700);
         robot.armMotor.setPower(0);
         sleep(500);
 
-        //Nutn but net
-        robot.launchingMotor.setPower(-.5);
-        sleep(1470);
-        robot.launchingMotor.setPower(0);
-
+        robot.launchingMotor.setTargetPosition(3350*2);
+        robot.launchingMotor.setPower(.5);
+        while (robot.launchingMotor.isBusy()) {
+            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
+            telemetry.update();
+        }
+        robot.launchingMotor.setPower(0.0);
         sleep(1000);
 
         robot.leftMotorF.setPower(-.5);
@@ -109,35 +134,26 @@ public class Auto_Red extends LinearOpMode {
         robot.leftMotorB.setPower(-.5);
         robot.rightMotorB.setPower(-.5);
 
-        sleep(250);
+        sleep(1300);
 
-        robot.leftMotorF.setPower(0);
-        robot.rightMotorF.setPower(0);
-        robot.leftMotorB.setPower(0);
-        robot.rightMotorB.setPower(0);
+        robot.leftMotorF.setPower(-.5);
+        robot.rightMotorF.setPower(.5);
+        robot.leftMotorB.setPower(-.5);
+        robot.rightMotorB.setPower(.5);
 
-        sleep(500);
+        sleep(600);
 
         robot.leftMotorF.setPower(.5);
-        robot.rightMotorF.setPower(-.5);
+        robot.rightMotorF.setPower(.5);
         robot.leftMotorB.setPower(.5);
-        robot.rightMotorB.setPower(-.5);
+        robot.rightMotorB.setPower(.5);
 
-        sleep(450);
+        sleep(2500);
 
-        robot.leftMotorF.setPower(0);
-        robot.rightMotorF.setPower(0);
-        robot.leftMotorB.setPower(0);
-        robot.rightMotorB.setPower(0);
-
-        sleep(500);
-
-        robot.leftMotorF.setPower(-.5);
-        robot.rightMotorF.setPower(-.5);
-        robot.leftMotorB.setPower(-.5);
-        robot.rightMotorB.setPower(-.5);
-
-        sleep(1000);
+        robot.leftMotorF.setPower(0.0);
+        robot.rightMotorF.setPower(0.0);
+        robot.leftMotorB.setPower(0.0);
+        robot.rightMotorB.setPower(0.0);
 
     }
 }

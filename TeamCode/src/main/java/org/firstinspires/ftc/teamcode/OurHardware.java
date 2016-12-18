@@ -64,15 +64,13 @@ public class OurHardware
         launchingMotor.setPower(0);
         armMotor.setPower(0);
 
-        // Set almost all motors to run with encoders.
+        // Set all motors to run with encoders.
         leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // This one does not have an encoder yet. :(
-        launchingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        launchingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize all installed servos.
         claw = hwMap.servo.get("claw");

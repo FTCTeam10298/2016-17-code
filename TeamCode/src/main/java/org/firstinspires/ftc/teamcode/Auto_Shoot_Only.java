@@ -34,7 +34,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -84,6 +87,19 @@ public class Auto_Shoot_Only extends LinearOpMode {
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
 
+        robot.init(hardwareMap);
+        robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.armMotor.setTargetPosition(0);
+        robot.armMotor.setPower(0.0);
+
+        robot.init(hardwareMap);
+        robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.launchingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.launchingMotor.setTargetPosition(0);
+        robot.launchingMotor.setPower(0.0);
+//        robot.armMotor.setMaxSpeed(1000);
+//        robot.armMotor.setMaxSpeed(1000);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -91,15 +107,19 @@ public class Auto_Shoot_Only extends LinearOpMode {
 
         //Nutn but net
 
-        robot.armMotor.setPower(-.05);
+        robot.armMotor.setPower(.1);
         sleep(1000);
         robot.armMotor.setPower(0);
 
-        robot.launchingMotor.setPower(-.5);
-        sleep(1470);
-        robot.launchingMotor.setPower(0);
+        robot.launchingMotor.setTargetPosition(3350);
+        robot.launchingMotor.setPower(.5);
+        while (robot.launchingMotor.isBusy()) {
+            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
+            telemetry.update();
+        }
+        robot.launchingMotor.setPower(0.0);
 
-        robot.armMotor.setPower(.05);
+        robot.armMotor.setPower(-.1);
         sleep(1100);
         robot.armMotor.setPower(0);
 
@@ -107,22 +127,25 @@ public class Auto_Shoot_Only extends LinearOpMode {
         robot.claw.setPosition(0);
         sleep(500);
 
-        robot.armMotor.setPower(-.05);
+        robot.armMotor.setPower(.1);
         sleep(1000);
         robot.claw.setPosition(0.15);
         sleep(100);
 
-        robot.armMotor.setPower(.1);
+        robot.armMotor.setPower(-.2);
         sleep(700);
-        robot.armMotor.setPower(-.1);
+        robot.armMotor.setPower(.2);
         sleep(700);
         robot.armMotor.setPower(0);
         sleep(500);
 
-        robot.launchingMotor.setPower(-.5);
-        sleep(1470);
-        robot.launchingMotor.setPower(0);
-
+        robot.launchingMotor.setTargetPosition(3350*2);
+        robot.launchingMotor.setPower(.5);
+        while (robot.launchingMotor.isBusy()) {
+            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
+            telemetry.update();
+        }
+        robot.launchingMotor.setPower(0.0);
         sleep(1000);
 
 

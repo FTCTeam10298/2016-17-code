@@ -36,7 +36,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RESET_ENCODERS;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 
 /**
  * This file provides basic Telop driving for our robot.
@@ -229,10 +231,15 @@ public class OurTeleop extends OpMode {
         }
 
         if(gamepad2.x) {
-            robot.armMotor.setMode(RUN_USING_ENCODER);
-            robot.armMotor.setPower(0.0);
+            robot.armMotor.setMode(STOP_AND_RESET_ENCODER);
         }
 
+        if (gamepad2.y) {
+            robot.armMotor.setPower(0.0);
+            robot.armMotor.setTargetPosition(1200);
+            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.armMotor.setPower(-0.5);
+        }
         if (gamepad2.right_bumper) {
             robot.armMotor.setPower(0.0);
             robot.armMotor.setTargetPosition(2400);
@@ -252,7 +259,7 @@ public class OurTeleop extends OpMode {
         }
 
 
-        robot.launchingMotor.setPower(launchPower);
+        robot.launchingMotor.setPower(-launchPower);
         /*
         if (gamepad2.right_bumper) {
             robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -266,13 +273,13 @@ public class OurTeleop extends OpMode {
 
         if (gamepad2.b)
         {
-            clawposition = clawposition + 0.005;
+            clawposition = clawposition - 0.005;
 
         }
 
         if (gamepad2.a)
         {
-            clawposition = clawposition - 0.005;
+            clawposition = clawposition + 0.005;
 
         }
 
