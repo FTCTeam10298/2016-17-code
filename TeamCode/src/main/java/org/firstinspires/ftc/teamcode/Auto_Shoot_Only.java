@@ -100,6 +100,15 @@ public class Auto_Shoot_Only extends LinearOpMode {
         robot.launchingMotor.setPower(0.0);
 //        robot.armMotor.setMaxSpeed(1000);
 //        robot.armMotor.setMaxSpeed(1000);
+// TEST --------------------------------------------------------------------------------------------
+
+//        RobotDriveTime(0.5,2500);
+//        sleep(1000);
+//        RobotDriveTime(-0.5,2500);
+        RobotDrivePosition(5000, .25);
+
+
+//--------------------------------------------------------------------------------------------------
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -168,4 +177,59 @@ public class Auto_Shoot_Only extends LinearOpMode {
 
         sleep(1000);
    */ }
+
+    // FUNCTIONS -----------------------------------------------------------------------------------
+
+    void RobotDriveTime(int time, double power)
+    {
+        robot.leftMotorF.setPower(-power);
+        robot.rightMotorF.setPower(-power);
+        robot.rightMotorB.setPower(-power);
+        robot.leftMotorB.setPower(-power);
+
+        sleep(time);
+
+        robot.leftMotorF.setPower(0);
+        robot.rightMotorF.setPower(0);
+        robot.rightMotorB.setPower(0);
+        robot.leftMotorB.setPower(0);
+
+    }
+
+    void RobotDrivePosition(int position, double power)
+    {
+        position = -position;
+
+        robot.leftMotorF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightMotorF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.rightMotorB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.leftMotorB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.leftMotorF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightMotorF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightMotorB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftMotorB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.leftMotorF.setPower(-power);
+        robot.rightMotorF.setPower(-power);
+        robot.rightMotorB.setPower(-power);
+        robot.leftMotorB.setPower(-power);
+
+        robot.leftMotorF.setTargetPosition(position);
+        robot.rightMotorF.setTargetPosition(position);
+        robot.rightMotorB.setTargetPosition(position);
+        robot.leftMotorB.setTargetPosition(position);
+
+        while (robot.leftMotorF.isBusy() || robot.rightMotorF.isBusy() || robot.rightMotorB.isBusy() || robot.leftMotorB.isBusy()) {
+            telemetry.addData("encoder", "%d", robot.leftMotorF.getCurrentPosition());
+            telemetry.update();
+        }
+
+        robot.leftMotorF.setPower(0);
+        robot.rightMotorF.setPower(0);
+        robot.rightMotorB.setPower(0);
+        robot.leftMotorB.setPower(0);
+
+    }
+
 }
