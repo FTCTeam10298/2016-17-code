@@ -146,10 +146,10 @@ public class OurTeleop extends OpMode {
         //END OF SIDE DRIVE
         else {
             // START OF TANK DRIVE
-            LF_y = (gamepad1.left_stick_y / 2.0);
-            LB_y = (gamepad1.left_stick_y / 2.0);
-            RF_y = (gamepad1.right_stick_y / 2.0);
-            RB_y = (gamepad1.right_stick_y / 2.0);
+            LF_y = gamepad1.left_stick_y;
+            LB_y = gamepad1.left_stick_y;
+            RF_y = gamepad1.right_stick_y;
+            RB_y = gamepad1.right_stick_y;
 
             robot.leftMotorF.setPower(LF_y);
             robot.leftMotorB.setPower(LB_y);
