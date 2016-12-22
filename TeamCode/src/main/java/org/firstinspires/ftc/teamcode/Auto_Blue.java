@@ -21,7 +21,7 @@ written permission.
 NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
 LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESSFOR A PARTICULAR PURPOSE
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
 FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
@@ -46,7 +46,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Auto_Blue extends LinearOpMode {
 
     /* Declare OpMode members. */
-    OurHardware robot   = new OurHardware();   // Use a Pushbot's hardware
+            OurHardware     robot   = new OurHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     @Override
@@ -78,7 +78,6 @@ public class Auto_Blue extends LinearOpMode {
         robot.launchingMotor.setPower(0.0);
 //        robot.armMotor.setMaxSpeed(1000);
 //        robot.armMotor.setMaxSpeed(1000);
-
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -154,6 +153,5 @@ public class Auto_Blue extends LinearOpMode {
         robot.rightMotorF.setPower(0.0);
         robot.leftMotorB.setPower(0.0);
         robot.rightMotorB.setPower(0.0);
-
     }
 }
