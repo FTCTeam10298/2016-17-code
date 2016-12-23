@@ -212,49 +212,52 @@ public class Auto_Function_Test extends LinearOpMode {
     // FUNCTIONS -----------------------------------------------------------------------------------
 
 
-    void BallLaunch(int balls)
+    void BallLaunch(int ballsToLaunch)
     {
-        robot.armMotor.setPower(.1);
-        sleep(1000);
-        robot.armMotor.setPower(0);
+        for (int ballsLaunched = 0; ballsLaunched < ballsToLaunch; ballsLaunched++) {
+            robot.armMotor.setPower(.1);
+            sleep(1000);
+            robot.armMotor.setPower(0);
 
-        robot.launchingMotor.setTargetPosition(3350);
-        robot.launchingMotor.setPower(.5);
-        while (robot.launchingMotor.isBusy()) {
-            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
-            telemetry.update();
+            robot.launchingMotor.setTargetPosition(3350 * ballsLaunched);
+            robot.launchingMotor.setPower(.5);
+            while (robot.launchingMotor.isBusy()) {
+                telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
+                telemetry.update();
+            }
+            robot.launchingMotor.setPower(0.0);
+
+            robot.armMotor.setPower(-.1);
+            sleep(1100);
+            robot.armMotor.setPower(0);
+
+            sleep(500);
+            robot.claw.setPosition(0);
+            sleep(500);
+
+            robot.armMotor.setPower(.1);
+            sleep(1000);
+            robot.claw.setPosition(0.15);
+            sleep(100);
+
+            robot.armMotor.setPower(-.2);
+            sleep(700);
+            robot.armMotor.setPower(.2);
+            sleep(700);
+            robot.armMotor.setPower(0);
+            sleep(500);
+
+            /*
+            robot.launchingMotor.setTargetPosition(3350 * 2);
+            robot.launchingMotor.setPower(.5);
+            while (robot.launchingMotor.isBusy()) {
+                telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
+                telemetry.update();
+            }
+            robot.launchingMotor.setPower(0.0);
+            sleep(1000);
+            */
         }
-        robot.launchingMotor.setPower(0.0);
-
-        robot.armMotor.setPower(-.1);
-        sleep(1100);
-        robot.armMotor.setPower(0);
-
-        sleep(500);
-        robot.claw.setPosition(0);
-        sleep(500);
-
-        robot.armMotor.setPower(.1);
-        sleep(1000);
-        robot.claw.setPosition(0.15);
-        sleep(100);
-
-        robot.armMotor.setPower(-.2);
-        sleep(700);
-        robot.armMotor.setPower(.2);
-        sleep(700);
-        robot.armMotor.setPower(0);
-        sleep(500);
-
-        robot.launchingMotor.setTargetPosition(3350*2);
-        robot.launchingMotor.setPower(.5);
-        while (robot.launchingMotor.isBusy()) {
-            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
-            telemetry.update();
-        }
-        robot.launchingMotor.setPower(0.0);
-        sleep(1000);
-
     }
 
 
