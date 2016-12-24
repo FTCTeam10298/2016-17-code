@@ -34,8 +34,8 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -63,9 +63,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Function Test", group="Pushbot")
+@Autonomous(name="Auto Beacon Test", group="Pushbot")
 //@Disabled
-public class Auto_Function_Test extends LinearOpMode {
+public class Auto_Beacon extends LinearOpMode {
 
     /* Declare OpMode members. */
     OurHardware         robot   = new OurHardware();   // Use a Pushbot's hardware
@@ -176,18 +176,18 @@ public class Auto_Function_Test extends LinearOpMode {
         // values is a reference to the hsvValues array.
         final float values[] = hsvValues;
 
- //       while(opModeIsActive()) {
- //           Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
-//
-  //          // send the info back to driver station using telemetry function.
-    //        telemetry.addData("Clear", color.alpha());
-      //      telemetry.addData("Red  ", color.red());
-//            telemetry.addData("Green", color.green());
-  ///          telemetry.addData("Blue ", color.blue());
-       //     telemetry.addData("Hue", hsvValues[0]);
-     //       telemetry.update();
-    //    }
-DriveUntilBlue(.5);
+        while(opModeIsActive()) {
+            Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+
+            // send the info back to driver station using telemetry function.
+            telemetry.addData("Clear", color.alpha());
+            telemetry.addData("Red  ", color.red());
+            telemetry.addData("Green", color.green());
+            telemetry.addData("Blue ", color.blue());
+            telemetry.addData("Hue", hsvValues[0]);
+            telemetry.update();
+        }
+//DriveUntilBlue(.5);
 
 //--------------------------------------------------------------------------------------------------
 
@@ -207,27 +207,48 @@ DriveUntilBlue(.5);
         robot.rightMotorB.setPower(0.0);
 
         sleep(1000);
+
+
    */
+/*
+        DriveRobotPosition(33, .25);
+        BallLaunch(true);
+        DriveRobotPosition(30, .25);
+        DriveRobotTurn(135, .25);
+        DriveRobtTime(1500, -.25);
+        DriveRobotPosition(2, .25);
+        Sensebeacon(true);
+        DriveRobotTurn(90, .25);
+        DriveRobotPosition(48, .25);
+        DriveRobotTurn(90, -.25);
+        Sensebeacon(true);
+        DriveRobotTurn(45, .25);
+        DriveRobotPosition(50, .25);
+*/
+
+
+
     }
 
     // FUNCTIONS -----------------------------------------------------------------------------------
 
 
-    void BallLaunch(int ballsToLaunch)
-    {
-        for (int ballsLaunched = 0; ballsLaunched < ballsToLaunch; ballsLaunched++) {
-            robot.armMotor.setPower(.1);
-            sleep(1000);
-            robot.armMotor.setPower(0);
+    void BallLaunch(boolean ballsx2) {
+        robot.armMotor.setPower(.1);
+        sleep(1000);
+        robot.armMotor.setPower(0);
 
-            robot.launchingMotor.setTargetPosition(3350 * ballsLaunched);
-            robot.launchingMotor.setPower(.5);
-            while (robot.launchingMotor.isBusy()) {
-                telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
-                telemetry.update();
-            }
-            robot.launchingMotor.setPower(0.0);
+        robot.launchingMotor.setTargetPosition(3350);
+        robot.launchingMotor.setPower(.5);
+        while (robot.launchingMotor.isBusy()) {
+            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
+            telemetry.update();
+        }
 
+
+        robot.launchingMotor.setPower(0.0);
+
+        if (ballsx2) {
             robot.armMotor.setPower(-.1);
             sleep(1100);
             robot.armMotor.setPower(0);
@@ -248,7 +269,6 @@ DriveUntilBlue(.5);
             robot.armMotor.setPower(0);
             sleep(500);
 
-            /*
             robot.launchingMotor.setTargetPosition(3350 * 2);
             robot.launchingMotor.setPower(.5);
             while (robot.launchingMotor.isBusy()) {
@@ -257,12 +277,12 @@ DriveUntilBlue(.5);
             }
             robot.launchingMotor.setPower(0.0);
             sleep(1000);
-            */
+
         }
     }
 
 
-    void RobotDriveTime(int time, double power)
+    void DriveRobtTime(int time, double power)
     {
         DrivePowerAll(-power);
 
@@ -272,7 +292,7 @@ DriveUntilBlue(.5);
 
     }
 // RobotDrivePosition (works best with .25 power)
-    void RobotDrivePosition(int inches, double power)
+    void DriveRobotPosition(int inches, double power)
     {
         int position = -inches*90 ;
 
@@ -302,7 +322,7 @@ DriveUntilBlue(.5);
 
     }
 //RobotTurn
-    void RobotTurn (int degree, double power)
+    void DriveRobotTurn (int degree, double power)
     {
         int position = degree*19;
 
@@ -335,7 +355,7 @@ DriveUntilBlue(.5);
 
     }
 
-    void RobotSidewaysDrive (int inches)
+    void DriveRobotSideways (int inches)
     {
 
         int position = inches;
@@ -376,7 +396,7 @@ DriveUntilBlue(.5);
         robot.leftMotorB.setPower(power);
     }
 
-    void SidewaysDriveTime (int time, double power)
+    void DriveSidewaysTime (int time, double power)
     {
         robot.leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -439,6 +459,120 @@ DriveUntilBlue(.5);
         }
         if (colorFound)
             DrivePowerAll(0);
+    }
+
+    void DriveUntilColor (boolean beaconB, double power) {
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F, 0F, 0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+
+        Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+
+        // send the info back to driver station using telemetry function.
+        telemetry.addData("Clear", color.alpha());
+        telemetry.addData("Red  ", color.red());
+        telemetry.addData("Green", color.green());
+        telemetry.addData("Blue ", color.blue());
+        telemetry.addData("Hue", hsvValues[0]);
+        telemetry.update();
+        Boolean colorFound = false;
+
+        robot.leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (beaconB) {
+            while (!colorFound) {
+                DrivePowerAll(power);
+                if (color.blue() > 1) {
+                    colorFound = true;
+                }
+
+            }
+            if (colorFound)
+                DrivePowerAll(0);
+        }
+        else {
+            while (!colorFound) {
+                DrivePowerAll(power);
+                if (color.red() > 1) {
+                    colorFound = true;
+                }
+
+            }
+            if (colorFound)
+                DrivePowerAll(0);
+
+        }
+
+    }
+
+    void Sensebeacon (boolean Bluealliance) {
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F, 0F, 0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+
+        Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+
+        // send the info back to driver station using telemetry function.
+        telemetry.addData("Clear", color.alpha());
+        telemetry.addData("Red  ", color.red());
+        telemetry.addData("Green", color.green());
+        telemetry.addData("Blue ", color.blue());
+        telemetry.addData("Hue", hsvValues[0]);
+        telemetry.update();
+        Boolean colorFound = false;
+
+        robot.leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        if (Bluealliance) {
+            while (!colorFound) {
+                DrivePowerAll(-.25);
+                if (color.blue() > 1) {
+                    colorFound = true;
+
+                }
+                else if (color.red() > 1){
+                    DrivePowerAll(0);
+                    sleep(5000);
+                    DriveRobtTime(2000, -.25);
+                    DriveRobotPosition(2, .25);
+                    colorFound = true;
+                }
+
+            }
+            if (colorFound)
+                DrivePowerAll(0);
+        }
+        else
+        {
+            while (!colorFound) {
+                DrivePowerAll(-.25);
+                if (color.red() > 1) {
+                    colorFound = true;
+                }
+                else if (color.blue() > 1)
+                {
+                    DrivePowerAll(0);
+                    sleep(5000);
+                    DriveRobtTime(2000, -.25);
+                    DriveRobotPosition(2, .25);
+                    colorFound = true;
+                }
+
+            }
+            if (colorFound)
+                DrivePowerAll(0);
+        }
     }
 
 // -------GYRO------------------------------------------------------------------------------------------

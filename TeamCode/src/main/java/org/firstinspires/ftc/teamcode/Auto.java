@@ -34,13 +34,18 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import ftclib.*;
+import hallib.*;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -63,11 +68,32 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Function Test", group="Pushbot")
+@Autonomous(name="Auto", group="Pushbot")
 //@Disabled
-public class Auto_Function_Test extends LinearOpMode {
+public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
+    public enum Alliance {
+        ALLIANCE_RED,
+        ALLIANCE_BLUE
+    }
+    public enum StartPosition {
+        STARTPOSITION1,
+        STARTPOSITION2
+    }
+    public enum EndPosition {
+        ENDCENTER,
+        ENDCORNER,
+        ENDNONE
+    }
+    Alliance alliance = Alliance.ALLIANCE_RED;
+    int delay = 0;
+    StartPosition startposition = StartPosition.STARTPOSITION1;
+    int balls = 2;
+    int beacon = 2;
+    EndPosition endposition = EndPosition.ENDCENTER;
+
 
     /* Declare OpMode members. */
+    private HalDashboard dashboard;
     OurHardware         robot   = new OurHardware();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
     ModernRoboticsI2cGyro gyro    = null;                    // Additional Gyro device
@@ -80,7 +106,7 @@ public class Auto_Function_Test extends LinearOpMode {
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED             = 0.25;     // Nominal speed for better accuracy.
+    static final double     DRIVE_SPEED_NORMAL      = 0.25;     // Nominal speed for better accuracy.
     static final double     TURN_SPEED              = 0.25;     // Nominal half speed for better accuracy.
 
     static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
@@ -98,6 +124,8 @@ public class Auto_Function_Test extends LinearOpMode {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+        dashboard = new HalDashboard(telemetry);
+
         // Send telemetry message to alert driver that we are calibrating;
         telemetry.addData("Status", "Calibrating Gyro");    //
         telemetry.update();
@@ -140,6 +168,7 @@ public class Auto_Function_Test extends LinearOpMode {
 //        robot.armMotor.setMaxSpeed(1000);
 //        robot.armMotor.setMaxSpeed(1000);
         // Wait for the game to start (driver presses PLAY)
+        doMenus();
         waitForStart();
 // TEST --------------------------------------------------------------------------------------------
 
@@ -159,35 +188,35 @@ public class Auto_Function_Test extends LinearOpMode {
 //        sleep (5000);
 //        RobotSidewaysDrive(4000);
 
-//        gyroDrive(DRIVE_SPEED, 48.0, 0.0);    // Drive FWD 48 inches
-//        gyroTurn( TURN_SPEED, -45.0);         // Turn  CCW to -45 Degrees
+//        Drivegyro(DRIVE_SPEED, 48.0, 0.0);    // Drive FWD 48 inches
+//        DriveTurngyro( TURN_SPEED, -45.0);         // Turn  CCW to -45 Degrees
 //        gyroHold( TURN_SPEED, -45.0, 0.5);    // Hold -45 Deg heading for a 1/2 second
-//        gyroTurn( TURN_SPEED,  45.0);         // Turn  CW  to  45 Degrees
+//        DriveTurngyro( TURN_SPEED,  45.0);         // Turn  CW  to  45 Degrees
 //        gyroHold( TURN_SPEED,  45.0, 0.5);    // Hold  45 Deg heading for a 1/2 second
-//        gyroTurn( TURN_SPEED,   0.0);         // Turn  CW  to   0 Degrees
+//        DriveTurngyro( TURN_SPEED,   0.0);         // Turn  CW  to   0 Degrees
 //        gyroHold( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for a 1 second
-//        gyroDrive(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
+//        Drivegyro(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
 //        gyroHold( TURN_SPEED,   0.0, 0.5);    // Hold  0 Deg heading for a 1/2 second
 
         // convert the RGB values to HSV values.
         // hsvValues is an array that will hold the hue, saturation, and value information.
-        float hsvValues[] = {0F,0F,0F};
-
-        // values is a reference to the hsvValues array.
-        final float values[] = hsvValues;
-
- //       while(opModeIsActive()) {
- //           Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+//        float hsvValues[] = {0F,0F,0F};
 //
-  //          // send the info back to driver station using telemetry function.
-    //        telemetry.addData("Clear", color.alpha());
-      //      telemetry.addData("Red  ", color.red());
+//        // values is a reference to the hsvValues array.
+//        final float values[] = hsvValues;
+//
+//        while(opModeIsActive()) {
+//            Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+//
+//            // send the info back to driver station using telemetry function.
+//            telemetry.addData("Clear", color.alpha());
+//            telemetry.addData("Red  ", color.red());
 //            telemetry.addData("Green", color.green());
-  ///          telemetry.addData("Blue ", color.blue());
-       //     telemetry.addData("Hue", hsvValues[0]);
-     //       telemetry.update();
-    //    }
-DriveUntilBlue(.5);
+//            telemetry.addData("Blue ", color.blue());
+//            telemetry.addData("Hue", hsvValues[0]);
+//            telemetry.update();
+//        }
+//DriveUntilBlue(.5);
 
 //--------------------------------------------------------------------------------------------------
 
@@ -207,27 +236,47 @@ DriveUntilBlue(.5);
         robot.rightMotorB.setPower(0.0);
 
         sleep(1000);
+
    */
+
+        DriveRobotPosition(33, .25);
+        BallLaunch(true);
+        DriveRobotPosition(30, .25);
+        DriveRobotTurn(135, .25);
+        DriveRobtTime(1500, -.25);
+        DriveRobotPosition(2, .25);
+        Sensebeacon(true);
+        DriveRobotTurn(90, .25);
+        DriveRobotPosition(48, .25);
+        DriveRobotTurn(90, -.25);
+        Sensebeacon(true);
+        DriveRobotTurn(45, .25);
+        DriveRobotPosition(50, .25);
+
+
+
+
     }
 
     // FUNCTIONS -----------------------------------------------------------------------------------
 
 
-    void BallLaunch(int ballsToLaunch)
-    {
-        for (int ballsLaunched = 0; ballsLaunched < ballsToLaunch; ballsLaunched++) {
-            robot.armMotor.setPower(.1);
-            sleep(1000);
-            robot.armMotor.setPower(0);
+    void BallLaunch(boolean ballsx2) {
+        robot.armMotor.setPower(.1);
+        sleep(1000);
+        robot.armMotor.setPower(0);
 
-            robot.launchingMotor.setTargetPosition(3350 * ballsLaunched);
-            robot.launchingMotor.setPower(.5);
-            while (robot.launchingMotor.isBusy()) {
-                telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
-                telemetry.update();
-            }
-            robot.launchingMotor.setPower(0.0);
+        robot.launchingMotor.setTargetPosition(3350);
+        robot.launchingMotor.setPower(.5);
+        while (robot.launchingMotor.isBusy()) {
+            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
+            telemetry.update();
+        }
 
+
+        robot.launchingMotor.setPower(0.0);
+
+        if (ballsx2) {
             robot.armMotor.setPower(-.1);
             sleep(1100);
             robot.armMotor.setPower(0);
@@ -248,7 +297,6 @@ DriveUntilBlue(.5);
             robot.armMotor.setPower(0);
             sleep(500);
 
-            /*
             robot.launchingMotor.setTargetPosition(3350 * 2);
             robot.launchingMotor.setPower(.5);
             while (robot.launchingMotor.isBusy()) {
@@ -257,12 +305,12 @@ DriveUntilBlue(.5);
             }
             robot.launchingMotor.setPower(0.0);
             sleep(1000);
-            */
+
         }
     }
 
 
-    void RobotDriveTime(int time, double power)
+    void DriveRobtTime(int time, double power)
     {
         DrivePowerAll(-power);
 
@@ -272,7 +320,7 @@ DriveUntilBlue(.5);
 
     }
 // RobotDrivePosition (works best with .25 power)
-    void RobotDrivePosition(int inches, double power)
+    void DriveRobotPosition(int inches, double power)
     {
         int position = -inches*90 ;
 
@@ -302,7 +350,7 @@ DriveUntilBlue(.5);
 
     }
 //RobotTurn
-    void RobotTurn (int degree, double power)
+    void DriveRobotTurn (int degree, double power)
     {
         int position = degree*19;
 
@@ -335,7 +383,7 @@ DriveUntilBlue(.5);
 
     }
 
-    void RobotSidewaysDrive (int inches)
+    void DriveRobotSideways (int inches)
     {
 
         int position = inches;
@@ -376,7 +424,7 @@ DriveUntilBlue(.5);
         robot.leftMotorB.setPower(power);
     }
 
-    void SidewaysDriveTime (int time, double power)
+    void DriveSidewaysTime (int time, double power)
     {
         robot.leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -441,6 +489,122 @@ DriveUntilBlue(.5);
             DrivePowerAll(0);
     }
 
+    void DriveUntilColor (boolean beaconB, double power) {
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F, 0F, 0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+
+        Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+
+        // send the info back to driver station using telemetry function.
+        telemetry.addData("Clear", color.alpha());
+        telemetry.addData("Red  ", color.red());
+        telemetry.addData("Green", color.green());
+        telemetry.addData("Blue ", color.blue());
+        telemetry.addData("Hue", hsvValues[0]);
+        telemetry.update();
+        Boolean colorFound = false;
+
+        robot.leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (beaconB) {
+            while (!colorFound) {
+                DrivePowerAll(power);
+                if (color.blue() > 1) {
+                    colorFound = true;
+                }
+
+            }
+            if (colorFound)
+                DrivePowerAll(0);
+        }
+        else {
+            while (!colorFound) {
+                DrivePowerAll(power);
+                if (color.red() > 1) {
+                    colorFound = true;
+                }
+
+            }
+            if (colorFound)
+                DrivePowerAll(0);
+
+        }
+
+    }
+
+    void Sensebeacon (boolean Bluealliance) {
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F, 0F, 0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+
+        Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
+
+        // send the info back to driver station using telemetry function.
+        telemetry.addData("Clear", color.alpha());
+        telemetry.addData("Red  ", color.red());
+        telemetry.addData("Green", color.green());
+        telemetry.addData("Blue ", color.blue());
+        telemetry.addData("Hue", hsvValues[0]);
+        telemetry.update();
+        Boolean colorFound = false;
+
+        robot.leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        if (Bluealliance) {
+            while (!colorFound) {
+                DrivePowerAll(-.25);
+                if (color.blue() > 1) {
+                    colorFound = true;
+
+                }
+                else if (color.red() > 1){
+                    DrivePowerAll(0);
+                    sleep(5000);
+                    DriveRobtTime(2000, -.25);
+                    DriveRobotPosition(2, .25);
+                    colorFound = true;
+                }
+
+            }
+            if (colorFound)
+                DrivePowerAll(0);
+        }
+        else
+        {
+            while (!colorFound) {
+                DrivePowerAll(-.25);
+                if (color.red() > 1) {
+                    colorFound = true;
+                }
+                else if (color.blue() > 1)
+                {
+                    DrivePowerAll(0);
+                    sleep(5000);
+                    DriveRobtTime(2000, -.25);
+                    DriveRobotPosition(2, .25);
+                    colorFound = true;
+                }
+
+            }
+            if (colorFound)
+                DrivePowerAll(0);
+        }
+    }
+
+
+
 // -------GYRO------------------------------------------------------------------------------------------
     /**
      *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
@@ -454,7 +618,7 @@ DriveUntilBlue(.5);
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroDrive ( double speed,
+    public void Drivegyro ( double speed,
                             double distance,
                             double angle) {
 
@@ -552,7 +716,7 @@ DriveUntilBlue(.5);
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroTurn (  double speed, double angle) {
+    public void DriveTurngyro (  double speed, double angle) {
 
         // keep looping while we are still active, and not on heading.
         while (opModeIsActive() && !onHeading(-speed, angle, P_TURN_COEFF)) {
@@ -659,5 +823,77 @@ DriveUntilBlue(.5);
     public double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1, 1);
     }
+
+
+    // MENU ----------------------------------------------------------------------------------------
+    @Override
+    public boolean isMenuUpButton() {
+        return gamepad1.dpad_up;
+    }
+
+    @Override
+    public boolean isMenuDownButton() {
+        return gamepad1.dpad_down;
+    }
+
+    @Override
+    public boolean isMenuEnterButton() {
+        return gamepad1.dpad_right;
+    }
+
+    @Override
+    public boolean isMenuBackButton() {
+        return gamepad1.dpad_left;
+    }
+
+    private void doMenus()  {
+        FtcChoiceMenu allianceMenu = new FtcChoiceMenu("Alliance:", null, this);
+        FtcChoiceMenu delayMenu = new FtcChoiceMenu("Delay:", allianceMenu, this);
+        FtcChoiceMenu startpositionMenu = new FtcChoiceMenu("Start Position:", delayMenu, this);
+        FtcChoiceMenu ballMenu = new FtcChoiceMenu("Balls:", startpositionMenu, this);
+        FtcChoiceMenu beaconsMenu = new FtcChoiceMenu("Beacons:", ballMenu, this);
+        FtcChoiceMenu endpositionMenu = new FtcChoiceMenu("End Position:", beaconsMenu, this);
+
+        allianceMenu.addChoice("Red", Alliance.ALLIANCE_RED, delayMenu);
+        allianceMenu.addChoice("Blue", Alliance.ALLIANCE_BLUE, delayMenu);
+
+        delayMenu.addChoice("0 seconds", 0, startpositionMenu);
+        delayMenu.addChoice("5 seconds", 5000, startpositionMenu);
+        delayMenu.addChoice("10 seconds", 10000, startpositionMenu);
+        delayMenu.addChoice("15 seconds", 15000, startpositionMenu);
+
+        startpositionMenu.addChoice("1", StartPosition.STARTPOSITION1, ballMenu);
+        startpositionMenu.addChoice("2", StartPosition.STARTPOSITION2, ballMenu);
+
+        ballMenu.addChoice("0 balls", 0, beaconsMenu);
+        ballMenu.addChoice("1 ball", 1, beaconsMenu);
+        ballMenu.addChoice("2 balls", 2, beaconsMenu);
+
+        beaconsMenu.addChoice("0 beacons", 0, endpositionMenu);
+        beaconsMenu.addChoice("1 beacon", 1, endpositionMenu);
+        beaconsMenu.addChoice("2 beacons", 2, endpositionMenu);
+
+        endpositionMenu.addChoice("Corner", EndPosition.ENDCORNER, null);
+        endpositionMenu.addChoice("Center", EndPosition.ENDCENTER, null);
+
+
+        FtcMenu.walkMenuTree(allianceMenu);
+        alliance = (Alliance) allianceMenu.getCurrentChoiceObject();
+        delay = (int) delayMenu.getCurrentChoiceObject();
+        startposition = (StartPosition) startpositionMenu.getCurrentChoiceObject();
+        balls = (int) ballMenu.getCurrentChoiceObject();
+        beacon = (int) beaconsMenu.getCurrentChoiceObject();
+        endposition = (EndPosition) endpositionMenu.getCurrentChoiceObject();
+
+        dashboard.displayPrintf(0, "Alliance: %s (%s)",
+                allianceMenu.getCurrentChoiceText(), alliance.toString());
+        dashboard.displayPrintf(1, "Delay = %d msec", delay);
+        dashboard.displayPrintf(2, "Start position: %s (%s)", startpositionMenu.getCurrentChoiceText(), startposition.toString());
+        dashboard.displayPrintf(3, "Balls = %d ", balls);
+        dashboard.displayPrintf(4, "Beacon = %d", beacon);
+        dashboard.displayPrintf(4, "End Position = %s (%s)", endpositionMenu.getCurrentChoiceText(),endposition.toString());
+
+    }
+
 //-------------------------------------------------------------------------------------------------
 }
