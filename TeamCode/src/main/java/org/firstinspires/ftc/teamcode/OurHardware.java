@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -22,6 +23,7 @@ public class OurHardware
     public DcMotor  armMotor        = null;
 
     public Servo    claw            = null;
+    public Servo    beaconpusher    = null;
 
     /* local OpMode members. */
     HardwareMap hwMap               = null;
@@ -52,7 +54,7 @@ public class OurHardware
         rightMotorF.setDirection(DcMotor.Direction.FORWARD);
         rightMotorB.setDirection(DcMotor.Direction.FORWARD);
 
-        launchingMotor.setDirection(DcMotor.Direction.FORWARD);
+        launchingMotor.setDirection(DcMotor.Direction.REVERSE);
         armMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
@@ -75,6 +77,9 @@ public class OurHardware
         // Define and initialize all installed servos.
         claw = hwMap.servo.get("claw");
         claw.setPosition(0.24);
+
+        beaconpusher = hwMap.servo.get("beacon");
+        beaconpusher.setPosition(0.5);
     }
 
     /*
