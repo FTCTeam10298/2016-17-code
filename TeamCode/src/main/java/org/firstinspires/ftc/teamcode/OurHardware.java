@@ -54,7 +54,7 @@ public class OurHardware
         rightMotorF.setDirection(DcMotor.Direction.FORWARD);
         rightMotorB.setDirection(DcMotor.Direction.FORWARD);
 
-        launchingMotor.setDirection(DcMotor.Direction.REVERSE);
+        launchingMotor.setDirection(DcMotor.Direction.FORWARD);
         armMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
@@ -79,7 +79,7 @@ public class OurHardware
         claw.setPosition(0.24);
 
         beaconpusher = hwMap.servo.get("beacon");
-        beaconpusher.setPosition(0.5);
+        beaconpusher.setPosition(0.0);
     }
 
     /*

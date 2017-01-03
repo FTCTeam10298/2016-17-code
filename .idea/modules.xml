@@ -4,10 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FtcRobotController/FtcRobotController.iml" filepath="$PROJECT_DIR$/FtcRobotController/FtcRobotController.iml" />
       <module fileurl="file://$PROJECT_DIR$/TeamCode/TeamCode.iml" filepath="$PROJECT_DIR$/TeamCode/TeamCode.iml" />
-      <module fileurl="file://$PROJECT_DIR$/code.iml" filepath="$PROJECT_DIR$/code.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ftc-cameratest/ftc-cameratest.iml" filepath="$PROJECT_DIR$/ftc-cameratest/ftc-cameratest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ftc-visionlib/ftc-visionlib.iml" filepath="$PROJECT_DIR$/ftc-visionlib/ftc-visionlib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/opencv-java/opencv-java.iml" filepath="$PROJECT_DIR$/opencv-java/opencv-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/codebeta.iml" filepath="$PROJECT_DIR$/codebeta.iml" />
     </modules>
   </component>
 </project>
