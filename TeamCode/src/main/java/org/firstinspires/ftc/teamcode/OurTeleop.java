@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RESET_ENCODERS;
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 
@@ -216,13 +217,31 @@ public class OurTeleop extends OpMode {
         */
 
         //Launching Arm Code And Claw Arm Code
-        launchPower = (gamepad2.left_stick_y);
-        if (gamepad2.right_stick_y > 0.15) {
-            armPower = 0.15;
+
+        launchPower = (gamepad2.right_trigger);
+        if(launchPower > 0.1) {
+            robot.launchingMotor.setMode(RUN_USING_ENCODER);
+            robot.launchingMotor.setPower(launchPower);
+        }
+        else if (robot.launchingMotor.getMode() == RUN_USING_ENCODER) {
+            robot.launchingMotor.setPower(0.0);
+        }
+        if (gamepad2.right_bumper) {
+            robot.launchingMotor.setMode(STOP_AND_RESET_ENCODER);
+            robot.launchingMotor.setTargetPosition(3375);
+            robot.launchingMotor.setMode(RUN_TO_POSITION);
+            robot.launchingMotor.setPower(.5);
+        }
+
+
+
+        armPower = gamepad2.right_stick_y;
+        if (armPower > 0.15) {
+            armPower = armPower*armPower;
             robot.armMotor.setMode(RUN_USING_ENCODER);
             robot.armMotor.setPower(armPower);
-        } else if (gamepad2.right_stick_y < -0.15){
-            armPower = -0.15;
+        } else if (armPower < -0.15){
+            armPower = -armPower*armPower;
             robot.armMotor.setMode(RUN_USING_ENCODER);
             robot.armMotor.setPower(armPower);
         }
@@ -230,36 +249,35 @@ public class OurTeleop extends OpMode {
             robot.armMotor.setPower(0.0);
         }
 
-        if(gamepad2.x) {
-            robot.armMotor.setMode(STOP_AND_RESET_ENCODER);
-        }
+//        if(gamepad2.x) {
+//            robot.armMotor.setMode(STOP_AND_RESET_ENCODER);
+//        }
 
-        if (gamepad2.y) {
-            robot.armMotor.setPower(0.0);
-            robot.armMotor.setTargetPosition(1200);
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.armMotor.setPower(-0.5);
-        }
-        if (gamepad2.right_bumper) {
-            robot.armMotor.setPower(0.0);
-            robot.armMotor.setTargetPosition(2400);
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.armMotor.setPower(-0.5);
-            // while (robot.armMotor.isBusy());
-            // robot.armMotor.setPower(0);
-        }
+//        if (gamepad2.y) {
+//            robot.armMotor.setPower(0.0);
+//            robot.armMotor.setTargetPosition(1200);
+//            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.armMotor.setPower(-0.5);
+//        }
+//        if (gamepad2.right_bumper) {
+//            robot.armMotor.setPower(0.0);
+//            robot.armMotor.setTargetPosition(2400);
+//            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.armMotor.setPower(-0.5);
+//            // while (robot.armMotor.isBusy());
+//            // robot.armMotor.setPower(0);
+//        }
 
-        if (gamepad2.left_bumper) {
-            robot.armMotor.setPower(0.0);
-            robot.armMotor.setTargetPosition(0);
-            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.armMotor.setPower(0.5);
-            // while (robot.armMotor.isBusy());
-            // robot.armMotor.setPower(0);
-        }
+//        if (gamepad2.left_bumper) {
+//            robot.armMotor.setPower(0.0);
+//            robot.armMotor.setTargetPosition(0);
+//            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.armMotor.setPower(0.5);
+//            // while (robot.armMotor.isBusy());
+//            // robot.armMotor.setPower(0);
+//        }
 
 
-        robot.launchingMotor.setPower(-launchPower);
         /*
         if (gamepad2.right_bumper) {
             robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
