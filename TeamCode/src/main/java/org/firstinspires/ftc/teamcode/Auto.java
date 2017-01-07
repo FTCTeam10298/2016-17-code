@@ -154,18 +154,12 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         color = (ModernRoboticsI2cColorSensor)hardwareMap.colorSensor.get("color");
         color.enableLed(false);
 
-        // init ods --------------------------------------------------------------------------------
+        // Init ods --------------------------------------------------------------------------------
         ods = (ModernRoboticsAnalogOpticalDistanceSensor) hardwareMap.opticalDistanceSensor.get("ods");
         ods.enableLed(true);
 
-        // claw init -------------------------------------------------------------------------------
-        robot.claw.setPosition(.3);
+        // Init presser ----------------------------------------------------------------------------
         robot.beaconpusher.setPosition(0.0);
-
-        robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.armMotor.setTargetPosition(0);
-        robot.armMotor.setPower(0.0);
 
         robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.launchingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -174,14 +168,15 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
         // Wait for the game to start (driver presses PLAY)
         doMenus();
-        dashboard.displayPrintf(0,"Status: Ready to start");    //
+        dashboard.displayPrintf(0,"Status: Ready to start");
         dashboard.displayPrintf(3,"Gyro  %d", gyro.getIntegratedZValue());
         dashboard.displayPrintf(4,"Red   %d", color.red());
         dashboard.displayPrintf(5,"Green %d", color.green());
         dashboard.displayPrintf(6,"Blue  %d", color.blue());
 
         waitForStart();
-// TEST --------------------------------------------------------------------------------------------
+
+        // TEST ------------------------------------------------------------------------------------
 
         // ODS TEST
 //        while (opModeIsActive()) {
@@ -193,20 +188,20 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 //        }
 //      Drive straight by inches using given power
 //          RobotDrivePosition(24, .25);
-
+//
 //      Turn by degree using given power
 //          RobotTurn(270, .25);
-
+//
 //        Drive sideways by inches using given power
 //            RobotSidewaysDrive(3000);
-
+//
 //      Drive Sideways for time (power either 1 or negative 1
 //        SidewaysDriveTime(2000, 1);
 //        sleep (5000);
 //        SidewaysDriveTime(2000, -1);
 //        sleep (5000);
 //        RobotSidewaysDrive(4000);
-
+//
 //        Drivegyro(DRIVE_SPEED, 48.0, 0.0);    // Drive FWD 48 inches
 //        DriveTurngyro( TURN_SPEED, -45.0);         // Turn  CCW to -45 Degrees
 //        gyroHold( TURN_SPEED, -45.0, 0.5);    // Hold -45 Deg heading for a 1/2 second
@@ -216,9 +211,9 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 //        gyroHold( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for a 1 second
 //        Drivegyro(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
 //        gyroHold( TURN_SPEED,   0.0, 0.5);    // Hold  0 Deg heading for a 1/2 second
-
-        // convert the RGB values to HSV values.
-        // hsvValues is an array that will hold the hue, saturation, and value information.
+//
+//        // convert the RGB values to HSV values.
+//        // hsvValues is an array that will hold the hue, saturation, and value information.
 //        float hsvValues[] = {0F,0F,0F};
 //
 //        // values is a reference to the hsvValues array.
@@ -235,7 +230,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 //            telemetry.addData("Hue", hsvValues[0]);
 //            telemetry.update();
 //        }
-//DriveUntilBlue(.5);
+//        DriveUntilBlue(.5);
 //        dashboard.displayPrintf(2, "pusher: %f",robot.beaconpusher.getPosition());
 //        double pos = 0.0;
 //        while(opModeIsActive())
@@ -248,7 +243,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 //            dashboard.displayPrintf(2, "pusher: %f",robot.beaconpusher.getPosition());
 //        }
 
-//---AUTONOMOUS START-----------------------------------------------------------------------------------------------
+        // AUTONOMOUS START-------------------------------------------------------------------------
 
         sleep(delay);
         if (DoTask("Setup Ball Launch", runmode))

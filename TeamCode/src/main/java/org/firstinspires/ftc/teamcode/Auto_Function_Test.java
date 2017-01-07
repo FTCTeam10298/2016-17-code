@@ -41,6 +41,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * This file illustrates the concept of driving a path based on time.
@@ -64,7 +65,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @Autonomous(name="Auto Function Test", group="Pushbot")
-//@Disabled
+@Disabled
 public class Auto_Function_Test extends LinearOpMode {
 
     /* Declare OpMode members. */
