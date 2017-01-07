@@ -216,7 +216,7 @@ public class Auto_Beacon extends LinearOpMode {
         BallLaunch(true);
         DriveRobotPosition(30, .25);
         DriveRobotTurn(135, .25);
-        DriveRobtTime(1500, -.25);
+        DriveRobotTime(1500, -.25);
         DriveRobotPosition(2, .25);
         Sensebeacon(true);
         DriveRobotTurn(90, .25);

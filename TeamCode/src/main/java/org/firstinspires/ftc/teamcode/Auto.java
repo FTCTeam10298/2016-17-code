@@ -40,11 +40,8 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import ftclib.*;
 import hallib.*;
@@ -159,7 +156,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         ods.enableLed(true);
 
         // Init presser ----------------------------------------------------------------------------
-        robot.beaconpusher.setPosition(0.0);
+        robot.beaconpusher.setPosition(0.1);
 
         robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.launchingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -261,13 +258,13 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             if (beacon > 0) {
                 if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1) {
                     DriveRobotPosition(.25, 25, FIND_LINE_FALSE);
-                    DriveTurngyro(.25, 45);
+                    DriveTurngyro(0.25, 45.0);
                     DriveRobotPosition(.25, 3, FIND_LINE_FALSE);
                     DriveSidewaysTime(1000, .5);
                     DriveRobothug(0.15, 20, FIND_LINE_TRUE);
                 } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
                     DriveRobotPosition(-.25, -27, FIND_LINE_FALSE);
-                    DriveTurngyro(.25, -45);
+                    DriveTurngyro(0.25, -45.0);
                     DriveRobotPosition(-.25, -3, FIND_LINE_FALSE);
                     DriveSidewaysTime(1000, .5);
                     DriveRobothug(-0.15, -20, FIND_LINE_TRUE);
@@ -275,14 +272,8 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             }
         }
 
-
-
-
         if (DoTask("Beacon 1 Push", runmode)){
-            BeaconPress();
-            robot.beaconpusher.setPosition(.5);
-            sleep(500);
-            robot.beaconpusher.setPosition(0);
+            BeaconPress(1);
         }
 
         if (DoTask("Drive to Beacon 2", runmode))
@@ -292,36 +283,37 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 if (alliance == Alliance.ALLIANCE_BLUE)
                 {
                     DriveRobothug(.5, 30, FIND_LINE_FALSE);
+                    DriveSidewaysTime(500, .5);
                     DriveRobothug(.15, 20, FIND_LINE_TRUE);
                 }
                 else {
                     DriveRobothug(-.5, -30, FIND_LINE_FALSE);
+                    DriveSidewaysTime(500, .5);
                     DriveRobothug(-.15, -20, FIND_LINE_TRUE);
                 }
 
                 if (DoTask("Beacon 2 Push", runmode)){
-                    BeaconPress();
-                    robot.beaconpusher.setPosition(.5);
-                    sleep(500);
-                    robot.beaconpusher.setPosition(0);
+                    BeaconPress(2);
                 }
             }
         }
         if (endposition == EndPosition.ENDCORNER && beacon == 2){
-            DriveSidewaysTime(750, -.5);
+            DriveSidewaysTime(1000, -.5);
             DriveRobotPosition(.5, 80, FIND_LINE_FALSE);
         }
         else if (endposition == EndPosition.ENDCORNER && beacon == 1){
-            DriveSidewaysTime(750, -.5);
+            DriveSidewaysTime(1000, -.5);
             DriveRobotPosition(.5, 48, FIND_LINE_FALSE);
         }
         else if (endposition == EndPosition.ENDCENTER && beacon == 2){
-            DriveSidewaysTime(750, -.5);
-            DriveRobotTurn(-45, -.25);
+            DriveSidewaysTime(1000, -.5);
+            DriveTurngyro(1.0, -13.0);
             DriveRobotPosition(.5, 50, FIND_LINE_FALSE);
         }
-        else if (endposition == EndPosition.ENDCENTER && beacon == 1){
-
+        else if (endposition == EndPosition.ENDCENTER && beacon == 1) {
+            DriveSidewaysTime(2000, -.5);
+            DriveTurngyro(1.0, 0.0);
+            DriveRobotPosition(.5, 10, FIND_LINE_FALSE);
         }
 
         DoTask("End of autonomous", runmode);
@@ -354,7 +346,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         return true;
     }
 
-    void BeaconPress ()
+    void BeaconPress (int beaconNumber)
     {
         int valueblue = color.blue();
         int valuered = color.red();
@@ -362,28 +354,31 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         dashboard.displayPrintf(5,"Green %d", color.green());
         dashboard.displayPrintf(6,"Blue  %d", valueblue);
         dashboard.displayPrintf(7,"Pusher  %f", robot.beaconpusher.getPosition());
-        if (alliance == Alliance.ALLIANCE_BLUE){
-            if (valueblue < valuered){
+        if (alliance == Alliance.ALLIANCE_BLUE && valueblue < valuered) {
                 DriveRobotPosition(0.1, 5, FIND_LINE_FALSE);
-            }
         }
-        else if (alliance == Alliance.ALLIANCE_RED){
-            if (valuered < valueblue){
-                DriveRobotPosition(-0.1, -5, FIND_LINE_FALSE);
+        else if (alliance == Alliance.ALLIANCE_RED && valuered < valueblue) {
+            DriveRobotPosition(-0.1, -5, FIND_LINE_FALSE);
+        }
+        robot.beaconpusher.setPosition(.5);
+        sleep(500);
+        robot.beaconpusher.setPosition(0.1);
+        if (beaconNumber == 2) {
+            if (alliance == Alliance.ALLIANCE_BLUE && valueblue < valuered) {
+                DriveRobotPosition(0.1, -5, FIND_LINE_FALSE);
+            } else if (alliance == Alliance.ALLIANCE_RED && valuered < valueblue) {
+                DriveRobotPosition(-0.1, 5, FIND_LINE_FALSE);
             }
         }
     }
 
     void BallLaunch(int ballnum) {
-        if (ballnum == 0)
+        if (ballnum == 0) {
             return;
+        }
         else {
-//            robot.armMotor.setPower(.1);
-//            sleep(1000);
-//            robot.armMotor.setPower(0);
-
             dashboard.displayPrintf(3,"encoder: %d", robot.launchingMotor.getCurrentPosition());
-            robot.launchingMotor.setTargetPosition(3375);
+            robot.launchingMotor.setTargetPosition(3350);
             robot.launchingMotor.setPower(.5);
             while (robot.launchingMotor.isBusy()) {
                 dashboard.displayPrintf(3,"encoder: %d", robot.launchingMotor.getCurrentPosition());
@@ -392,25 +387,10 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         }
 
         if (ballnum == 2) {
-            robot.armMotor.setPower(-.1);
-            sleep(1100);
+            robot.armMotor.setPower(1);
+            sleep(400);
             robot.armMotor.setPower(0);
-
-            sleep(500);
-            robot.claw.setPosition(0);
-            sleep(500);
-
-            robot.armMotor.setPower(.1);
             sleep(1000);
-            robot.claw.setPosition(0.15);
-            sleep(100);
-
-            robot.armMotor.setPower(-.2);
-            sleep(700);
-            robot.armMotor.setPower(.2);
-            sleep(700);
-            robot.armMotor.setPower(0);
-            sleep(500);
 
             robot.launchingMotor.setTargetPosition(3350 * 2);
             robot.launchingMotor.setPower(.5);
@@ -418,13 +398,11 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 dashboard.displayPrintf(3,"encoder: %d", robot.launchingMotor.getCurrentPosition());
             }
             robot.launchingMotor.setPower(0.0);
-            sleep(1000);
-
         }
     }
 
 
-    void DriveRobtTime(int time, double power)
+    void DriveRobotTime(int time, double power)
     {
         DrivePowerAll(-power);
 
@@ -460,7 +438,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
         while (notFound && (robot.leftMotorF.isBusy() && robot.rightMotorF.isBusy() && robot.rightMotorB.isBusy() && robot.leftMotorB.isBusy())) {
             // look for line
-            if (findline == true)
+            if (findline)
             {
                 counter += 1;
                 odsvalue = ods.getRawLightDetected();
@@ -516,7 +494,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
         while (notFound && (robot.leftMotorF.isBusy() && robot.rightMotorF.isBusy() && robot.rightMotorB.isBusy() && robot.leftMotorB.isBusy())) {
             // look for line
-            if (findline == true)
+            if (findline)
             {
                 counter += 1;
                 odsvalue = ods.getRawLightDetected();
@@ -751,7 +729,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 else if (color.red() > 1){
                     DrivePowerAll(0);
                     sleep(5000);
-                    DriveRobtTime(2000, -.25);
+                    DriveRobotTime(2000, -.25);
                     DriveRobotPosition(.25, 2, FIND_LINE_FALSE);
                     colorFound = true;
                 }
@@ -771,7 +749,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 {
                     DrivePowerAll(0);
                     sleep(5000);
-                    DriveRobtTime(2000, -.25);
+                    DriveRobotTime(2000, -.25);
                     DriveRobotPosition(.25, 2, FIND_LINE_FALSE);
                     colorFound = true;
                 }
@@ -913,7 +891,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    public void DriveTurngyro (  double speed, double angle) {
+    public void DriveTurngyro (double speed, double angle) {
 
         // Turn off RUN_TO_POSITION
         robot.leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -980,7 +958,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         else {
             steer = getSteer(error, PCoeff);
             rightSpeed  = speed * steer;
-            rightSpeed = Range.clip(rightSpeed, 0.0, 1.0);
+            rightSpeed = Range.clip(rightSpeed, -1.0, 1.0);
             leftSpeed   = -rightSpeed;
         }
 
@@ -991,9 +969,9 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         robot.rightMotorB.setPower(rightSpeed);
 
         // Display it for the driver.
-        dashboard.displayPrintf(3,"Target", "%5.2f", angle);
-        dashboard.displayPrintf(4,"Err/St", "%5.2f/%5.2f", error, steer);
-        dashboard.displayPrintf(5,"Speed.", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+        dashboard.displayPrintf(3,"Target %5.2f", angle);
+        dashboard.displayPrintf(4,"Err/St %5.2f/%5.2f", error, steer);
+        dashboard.displayPrintf(5,"Speed. %5.2f:%5.2f", leftSpeed, rightSpeed);
 
         return onTarget;
     }
@@ -1022,7 +1000,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
      * @return
      */
     public double getSteer(double error, double PCoeff) {
-        return Range.clip(error * PCoeff, -1, 1);
+        return Range.clip(error * PCoeff, -1.0, 1.0);
     }
 
 

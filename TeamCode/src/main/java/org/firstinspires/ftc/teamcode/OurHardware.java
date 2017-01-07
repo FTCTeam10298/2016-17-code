@@ -71,15 +71,15 @@ public class OurHardware
         leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // FIXME
         launchingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize all installed servos.
-        claw = hwMap.servo.get("claw");
-        claw.setPosition(0.24);
+//        claw = hwMap.servo.get("claw");
+//        claw.setPosition(0.24);
 
         beaconpusher = hwMap.servo.get("beacon");
-        beaconpusher.setPosition(0.0);
+        beaconpusher.setPosition(0.1);
     }
 
     /*

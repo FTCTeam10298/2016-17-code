@@ -69,12 +69,7 @@ public class OurTeleop extends OpMode {
          */
 
         robot.init(hardwareMap);
-        robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.armMotor.setMode(RUN_USING_ENCODER);
-//        robot.armMotor.setTargetPosition(0);
-        robot.armMotor.setPower(0.0);
-//        robot.armMotor.setMaxSpeed(1000);
+//        robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Say", "Hello Driver");
@@ -228,7 +223,7 @@ public class OurTeleop extends OpMode {
         }
         if (gamepad2.right_bumper) {
             robot.launchingMotor.setMode(STOP_AND_RESET_ENCODER);
-            robot.launchingMotor.setTargetPosition(3375);
+            robot.launchingMotor.setTargetPosition(3350);
             robot.launchingMotor.setMode(RUN_TO_POSITION);
             robot.launchingMotor.setPower(.5);
         }
@@ -238,14 +233,12 @@ public class OurTeleop extends OpMode {
         armPower = gamepad2.right_stick_y;
         if (armPower > 0.15) {
             armPower = armPower*armPower;
-            robot.armMotor.setMode(RUN_USING_ENCODER);
             robot.armMotor.setPower(armPower);
         } else if (armPower < -0.15){
             armPower = -armPower*armPower;
-            robot.armMotor.setMode(RUN_USING_ENCODER);
             robot.armMotor.setPower(armPower);
         }
-        else if (robot.armMotor.getMode() == RUN_USING_ENCODER) {
+        else {
             robot.armMotor.setPower(0.0);
         }
 
@@ -289,21 +282,21 @@ public class OurTeleop extends OpMode {
         }
         */
 
-        if (gamepad2.b)
-        {
-            clawposition = clawposition - 0.005;
-
-        }
-
-        if (gamepad2.a)
-        {
-            clawposition = clawposition + 0.005;
-
-        }
-
-        clawposition = Range.clip(clawposition, 0.0, 0.3);
-
-        robot.claw.setPosition(clawposition);
+//        if (gamepad2.b)
+//        {
+//            clawposition = clawposition - 0.005;
+//
+//        }
+//
+//        if (gamepad2.a)
+//        {
+//            clawposition = clawposition + 0.005;
+//
+//        }
+//
+//        clawposition = Range.clip(clawposition, 0.0, 0.3);
+//
+//        robot.claw.setPosition(clawposition);
 
         // Send telemetry message to signify robot running
         telemetry.addData("claw position",  "Offset = %.2f", robot.claw.getPosition());
