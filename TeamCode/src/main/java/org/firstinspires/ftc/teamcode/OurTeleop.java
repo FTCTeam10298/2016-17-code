@@ -299,7 +299,7 @@ public class OurTeleop extends OpMode {
 //        robot.claw.setPosition(clawposition);
 
         // Send telemetry message to signify robot running
-        telemetry.addData("claw position",  "Offset = %.2f", robot.claw.getPosition());
+//        telemetry.addData("claw position",  "Offset = %.2f", robot.claw.getPosition());
         telemetry.addData("arm target",  "%d", armposition);
         telemetry.addData("arm encoder", "%d %d", robot.armMotor.getCurrentPosition(), robot.armMotor.getMaxSpeed());
     }

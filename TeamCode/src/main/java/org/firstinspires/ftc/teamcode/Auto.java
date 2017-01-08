@@ -124,6 +124,9 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
     static final boolean    FIND_LINE_TRUE = true;
     static final boolean    FIND_LINE_FALSE = false;
 
+    boolean runLonger = false;
+    boolean longLaunch = false;
+
     @Override
     public void runOpMode() {
 
@@ -173,147 +176,103 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
         waitForStart();
 
-        // TEST ------------------------------------------------------------------------------------
-
-        // ODS TEST
-//        while (opModeIsActive()) {
-//
-//            // send the info back to driver station using telemetry function.
-//            dashboard.displayPrintf(1,"Raw %5.2f", ods.getRawLightDetected());
-//            dashboard.displayPrintf(2,"Normal %5.2f", ods.getLightDetected());
-//
-//        }
-//      Drive straight by inches using given power
-//          RobotDrivePosition(24, .25);
-//
-//      Turn by degree using given power
-//          RobotTurn(270, .25);
-//
-//        Drive sideways by inches using given power
-//            RobotSidewaysDrive(3000);
-//
-//      Drive Sideways for time (power either 1 or negative 1
-//        SidewaysDriveTime(2000, 1);
-//        sleep (5000);
-//        SidewaysDriveTime(2000, -1);
-//        sleep (5000);
-//        RobotSidewaysDrive(4000);
-//
-//        Drivegyro(DRIVE_SPEED, 48.0, 0.0);    // Drive FWD 48 inches
-//        DriveTurngyro( TURN_SPEED, -45.0);         // Turn  CCW to -45 Degrees
-//        gyroHold( TURN_SPEED, -45.0, 0.5);    // Hold -45 Deg heading for a 1/2 second
-//        DriveTurngyro( TURN_SPEED,  45.0);         // Turn  CW  to  45 Degrees
-//        gyroHold( TURN_SPEED,  45.0, 0.5);    // Hold  45 Deg heading for a 1/2 second
-//        DriveTurngyro( TURN_SPEED,   0.0);         // Turn  CW  to   0 Degrees
-//        gyroHold( TURN_SPEED,   0.0, 1.0);    // Hold  0 Deg heading for a 1 second
-//        Drivegyro(DRIVE_SPEED,-48.0, 0.0);    // Drive REV 48 inches
-//        gyroHold( TURN_SPEED,   0.0, 0.5);    // Hold  0 Deg heading for a 1/2 second
-//
-//        // convert the RGB values to HSV values.
-//        // hsvValues is an array that will hold the hue, saturation, and value information.
-//        float hsvValues[] = {0F,0F,0F};
-//
-//        // values is a reference to the hsvValues array.
-//        final float values[] = hsvValues;
-//
-//        while(opModeIsActive()) {
-//            Color.RGBToHSV(color.red() * 8, color.green() * 8, color.blue() * 8, hsvValues);
-//
-//            // send the info back to driver station using telemetry function.
-//            telemetry.addData("Clear", color.alpha());
-//            telemetry.addData("Red  ", color.red());
-//            telemetry.addData("Green", color.green());
-//            telemetry.addData("Blue ", color.blue());
-//            telemetry.addData("Hue", hsvValues[0]);
-//            telemetry.update();
-//        }
-//        DriveUntilBlue(.5);
-//        dashboard.displayPrintf(2, "pusher: %f",robot.beaconpusher.getPosition());
-//        double pos = 0.0;
-//        while(opModeIsActive())
-//        {
-//            if(gamepad1.a) pos = pos + 0.01;
-//            if(gamepad1.b) pos = pos - 0.01;
-//            pos = Range.clip(pos, 0.0, 1.0);
-//
-//            robot.beaconpusher.setPosition(pos);
-//            dashboard.displayPrintf(2, "pusher: %f",robot.beaconpusher.getPosition());
-//        }
-
         // AUTONOMOUS START-------------------------------------------------------------------------
 
         sleep(delay);
-        if (DoTask("Setup Ball Launch", runmode))
-        {
-            if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1)
-                DriveRobotPosition(.25, 25, FIND_LINE_FALSE);//really should be (-.25, 34, 0)
-            else if(alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1)
-                DriveRobotPosition(-.25, -25, FIND_LINE_FALSE);//really should be (-.25, -34, 0)
-        }
-        if (DoTask("Ball Launch", runmode))
+        if (startposition == StartPosition.STARTPOSITION1) {
+            if (DoTask("Setup Ball Launch", runmode)) {
+                if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1)
+                    DriveRobotPosition(.25, 30, FIND_LINE_FALSE);//really should be (-.25, 34, 0)
+                else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1)
+                    DriveRobotPosition(-.25, -25, FIND_LINE_FALSE);//really should be (-.25, -34, 0)
+            }
+            if (DoTask("Ball Launch", runmode))
+                BallLaunch(balls);
+
+            // go to beacon
+            if (DoTask("Go to beacon 1", runmode)) {
+                if (beacon > 0) {
+                    if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1) {
+                        DriveRobotPosition(.25, 20, FIND_LINE_FALSE);
+                        DriveTurngyro(0.25, 45.0);
+                        DriveRobotPosition(.25, 3, FIND_LINE_FALSE);
+                        DriveSidewaysTime(1000, .5);
+                        DriveRobothug(0.15, 20, FIND_LINE_TRUE);
+                    } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
+                        DriveRobotPosition(-.25, -27, FIND_LINE_FALSE);
+                        DriveTurngyro(0.25, -45.0);
+                        DriveRobotPosition(-.25, -3, FIND_LINE_FALSE);
+                        DriveSidewaysTime(1000, .5);
+                        DriveRobothug(-0.15, -20, FIND_LINE_TRUE);
+                    }
+                }
+            }
+
+            if (DoTask("Beacon 1 Push", runmode)) {
+                BeaconPress(1);
+            }
+
+            if (DoTask("Drive to Beacon 2", runmode)) {
+                if (beacon == 2) {
+                    if (alliance == Alliance.ALLIANCE_BLUE) {
+                        if (runLonger) {
+                            DriveRobothug(.5, 49, FIND_LINE_FALSE);
+                        } else {
+                            DriveRobothug(.5, 42, FIND_LINE_FALSE);
+                        }
+                        DriveSidewaysTime(500, .5);
+                        DriveRobothug(.15, 25, FIND_LINE_TRUE);
+                    } else {
+                        DriveRobothug(-.5, -30, FIND_LINE_FALSE);
+                        DriveSidewaysTime(500, .5);
+                        DriveRobothug(-.15, -25, FIND_LINE_TRUE);
+                    }
+
+                    if (DoTask("Beacon 2 Push", runmode)) {
+                        BeaconPress(2);
+                    }
+                }
+            }
+            if (alliance == Alliance.ALLIANCE_RED) {
+                if (endposition == EndPosition.ENDCORNER && beacon == 2) {
+                    DriveSidewaysTime(1000, -.5);
+                    DriveRobotPosition(.5, 80, FIND_LINE_FALSE);
+                } else if (endposition == EndPosition.ENDCORNER && beacon == 1) {
+                    DriveSidewaysTime(1000, -.5);
+                    DriveRobotPosition(.5, 48, FIND_LINE_FALSE);
+                } else if (endposition == EndPosition.ENDCENTER && beacon == 2) {
+                    DriveSidewaysTime(1000, -.5);
+                    DriveTurngyro(0.5, -13.0);
+                    DriveRobotPosition(.5, 50, FIND_LINE_FALSE);
+                } else if (endposition == EndPosition.ENDCENTER && beacon == 1) {
+                    DriveSidewaysTime(2000, -.5);
+                    DriveTurngyro(0.5, 0.0);
+                    DriveRobotPosition(.5, 10, FIND_LINE_FALSE);
+                }
+            } else {
+                if (endposition == EndPosition.ENDCORNER && beacon == 2) {
+                    DriveSidewaysTime(1000, -.5);
+                    DriveRobotPosition(.5, -80, FIND_LINE_FALSE);
+                } else if (endposition == EndPosition.ENDCORNER && beacon == 1) {
+                    DriveSidewaysTime(1000, -.5);
+                    DriveRobotPosition(.5, -48, FIND_LINE_FALSE);
+                } else if (endposition == EndPosition.ENDCENTER && beacon == 2) {
+                    DriveSidewaysTime(1000, -.5);
+                    DriveTurngyro(0.5, 13.0);
+                    DriveRobotPosition(.5, -50, FIND_LINE_FALSE);
+                } else if (endposition == EndPosition.ENDCENTER && beacon == 1) {
+                    DriveSidewaysTime(2000, -.5);
+                    DriveTurngyro(0.5, 0.0);
+                    DriveRobotPosition(.5, 10, FIND_LINE_FALSE);
+                }
+            }
+        } else {
+            longLaunch = true;
+            DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
+            DriveTurngyro(0.1, -90.0);
             BallLaunch(balls);
-
-        // go to beacon
-        if (DoTask("Go to beacon 1", runmode)) {
-            if (beacon > 0) {
-                if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1) {
-                    DriveRobotPosition(.25, 25, FIND_LINE_FALSE);
-                    DriveTurngyro(0.25, 45.0);
-                    DriveRobotPosition(.25, 3, FIND_LINE_FALSE);
-                    DriveSidewaysTime(1000, .5);
-                    DriveRobothug(0.15, 20, FIND_LINE_TRUE);
-                } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
-                    DriveRobotPosition(-.25, -27, FIND_LINE_FALSE);
-                    DriveTurngyro(0.25, -45.0);
-                    DriveRobotPosition(-.25, -3, FIND_LINE_FALSE);
-                    DriveSidewaysTime(1000, .5);
-                    DriveRobothug(-0.15, -20, FIND_LINE_TRUE);
-                }
-            }
-        }
-
-        if (DoTask("Beacon 1 Push", runmode)){
-            BeaconPress(1);
-        }
-
-        if (DoTask("Drive to Beacon 2", runmode))
-        {
-            if (beacon == 2)
-            {
-                if (alliance == Alliance.ALLIANCE_BLUE)
-                {
-                    DriveRobothug(.5, 30, FIND_LINE_FALSE);
-                    DriveSidewaysTime(500, .5);
-                    DriveRobothug(.15, 20, FIND_LINE_TRUE);
-                }
-                else {
-                    DriveRobothug(-.5, -30, FIND_LINE_FALSE);
-                    DriveSidewaysTime(500, .5);
-                    DriveRobothug(-.15, -20, FIND_LINE_TRUE);
-                }
-
-                if (DoTask("Beacon 2 Push", runmode)){
-                    BeaconPress(2);
-                }
-            }
-        }
-        if (endposition == EndPosition.ENDCORNER && beacon == 2){
-            DriveSidewaysTime(1000, -.5);
-            DriveRobotPosition(.5, 80, FIND_LINE_FALSE);
-        }
-        else if (endposition == EndPosition.ENDCORNER && beacon == 1){
-            DriveSidewaysTime(1000, -.5);
-            DriveRobotPosition(.5, 48, FIND_LINE_FALSE);
-        }
-        else if (endposition == EndPosition.ENDCENTER && beacon == 2){
-            DriveSidewaysTime(1000, -.5);
-            DriveTurngyro(1.0, -13.0);
-            DriveRobotPosition(.5, 50, FIND_LINE_FALSE);
-        }
-        else if (endposition == EndPosition.ENDCENTER && beacon == 1) {
-            DriveSidewaysTime(2000, -.5);
-            DriveTurngyro(1.0, 0.0);
-            DriveRobotPosition(.5, 10, FIND_LINE_FALSE);
+            DriveTurngyro(0.1, 0.0);
+            DriveRobotPosition(.5, 35, FIND_LINE_FALSE);
         }
 
         DoTask("End of autonomous", runmode);
@@ -355,19 +314,20 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         dashboard.displayPrintf(6,"Blue  %d", valueblue);
         dashboard.displayPrintf(7,"Pusher  %f", robot.beaconpusher.getPosition());
         if (alliance == Alliance.ALLIANCE_BLUE && valueblue < valuered) {
-                DriveRobotPosition(0.1, 5, FIND_LINE_FALSE);
+            DriveRobotPosition(0.15, -7, FIND_LINE_FALSE);
+            runLonger = true;
         }
         else if (alliance == Alliance.ALLIANCE_RED && valuered < valueblue) {
-            DriveRobotPosition(-0.1, -5, FIND_LINE_FALSE);
+            DriveRobotPosition(-0.15, -5, FIND_LINE_FALSE);
         }
         robot.beaconpusher.setPosition(.5);
         sleep(500);
         robot.beaconpusher.setPosition(0.1);
         if (beaconNumber == 2) {
             if (alliance == Alliance.ALLIANCE_BLUE && valueblue < valuered) {
-                DriveRobotPosition(0.1, -5, FIND_LINE_FALSE);
+                DriveRobotPosition(0.5, 7, FIND_LINE_FALSE);
             } else if (alliance == Alliance.ALLIANCE_RED && valuered < valueblue) {
-                DriveRobotPosition(-0.1, 5, FIND_LINE_FALSE);
+                DriveRobotPosition(-0.5, 5, FIND_LINE_FALSE);
             }
         }
     }
@@ -388,9 +348,13 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
         if (ballnum == 2) {
             robot.armMotor.setPower(1);
-            sleep(400);
+            if (longLaunch) {
+                sleep(4000);
+            } else {
+                sleep(1400);
+            }
             robot.armMotor.setPower(0);
-            sleep(1000);
+            // sleep(1000);
 
             robot.launchingMotor.setTargetPosition(3350 * 2);
             robot.launchingMotor.setPower(.5);

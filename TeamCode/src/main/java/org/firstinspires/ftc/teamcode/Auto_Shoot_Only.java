@@ -59,7 +59,7 @@ public class Auto_Shoot_Only extends LinearOpMode {
         robot.init(hardwareMap);
 
         // claw init
-        robot.claw.setPosition(.3);
+//        robot.claw.setPosition(.3);
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
@@ -85,45 +85,24 @@ public class Auto_Shoot_Only extends LinearOpMode {
 
         //Nutn but net
 
-        robot.armMotor.setPower(.1);
-        sleep(1000);
-        robot.armMotor.setPower(0);
-
+        telemetry.addData("encoder:", "%d", robot.launchingMotor.getCurrentPosition());
         robot.launchingMotor.setTargetPosition(3350);
         robot.launchingMotor.setPower(.5);
         while (robot.launchingMotor.isBusy()) {
-            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
-            telemetry.update();
+            updateTelemetry(telemetry);
         }
         robot.launchingMotor.setPower(0.0);
 
-        robot.armMotor.setPower(-.1);
-        sleep(1100);
+        robot.armMotor.setPower(1);
+        sleep(1400);
         robot.armMotor.setPower(0);
+        // sleep(1000);
 
-        sleep(500);
-        robot.claw.setPosition(0);
-        sleep(500);
-
-        robot.armMotor.setPower(.1);
-        sleep(1000);
-        robot.claw.setPosition(0.15);
-        sleep(100);
-
-        robot.armMotor.setPower(-.2);
-        sleep(700);
-        robot.armMotor.setPower(.2);
-        sleep(700);
-        robot.armMotor.setPower(0);
-        sleep(500);
-
-        robot.launchingMotor.setTargetPosition(3350*2);
+        robot.launchingMotor.setTargetPosition(3350 * 2);
         robot.launchingMotor.setPower(.5);
         while (robot.launchingMotor.isBusy()) {
-            telemetry.addData("encoder", "%d", robot.launchingMotor.getCurrentPosition());
-            telemetry.update();
+            updateTelemetry(telemetry);
         }
         robot.launchingMotor.setPower(0.0);
-        sleep(1000);
     }
 }
