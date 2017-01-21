@@ -179,6 +179,9 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         // AUTONOMOUS START-------------------------------------------------------------------------
 
         sleep(delay);
+        if (beacon < 2) {
+            longLaunch = true;
+        }
         if (startposition == StartPosition.STARTPOSITION1) {
             if (DoTask("Setup Ball Launch", runmode)) {
                 if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1)
@@ -193,13 +196,13 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             if (DoTask("Go to beacon 1", runmode)) {
                 if (beacon > 0) {
                     if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1) {
-                        DriveRobotPosition(.25, 20, FIND_LINE_FALSE);
+                        DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
                         DriveTurngyro(0.25, 45.0);
                         DriveRobotPosition(.25, 3, FIND_LINE_FALSE);
                         DriveSidewaysTime(1000, .5);
                         DriveRobothug(0.15, 20, FIND_LINE_TRUE);
                     } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
-                        DriveRobotPosition(-.25, -27, FIND_LINE_FALSE);
+                        DriveRobotPosition(-.5, -27, FIND_LINE_FALSE);
                         DriveTurngyro(0.25, -45.0);
                         DriveRobotPosition(-.25, -3, FIND_LINE_FALSE);
                         DriveSidewaysTime(1000, .5);
@@ -223,7 +226,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                         DriveSidewaysTime(500, .5);
                         DriveRobothug(.15, 25, FIND_LINE_TRUE);
                     } else {
-                        DriveRobothug(-.5, -30, FIND_LINE_FALSE);
+                        DriveRobothug(-.5, -35, FIND_LINE_FALSE);
                         DriveSidewaysTime(500, .5);
                         DriveRobothug(-.15, -25, FIND_LINE_TRUE);
                     }
@@ -243,7 +246,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 } else if (endposition == EndPosition.ENDCENTER && beacon == 2) {
                     DriveSidewaysTime(1000, -.5);
                     DriveTurngyro(0.5, -13.0);
-                    DriveRobotPosition(.5, 50, FIND_LINE_FALSE);
+                    DriveRobotPosition(.6, 52, FIND_LINE_FALSE);
                 } else if (endposition == EndPosition.ENDCENTER && beacon == 1) {
                     DriveSidewaysTime(2000, -.5);
                     DriveTurngyro(0.5, 0.0);
@@ -259,11 +262,13 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 } else if (endposition == EndPosition.ENDCENTER && beacon == 2) {
                     DriveSidewaysTime(1000, -.5);
                     DriveTurngyro(0.5, 13.0);
-                    DriveRobotPosition(.5, -50, FIND_LINE_FALSE);
+                    DriveRobotPosition(.6, -52, FIND_LINE_FALSE);
                 } else if (endposition == EndPosition.ENDCENTER && beacon == 1) {
                     DriveSidewaysTime(2000, -.5);
                     DriveTurngyro(0.5, 0.0);
-                    DriveRobotPosition(.5, 10, FIND_LINE_FALSE);
+                    DriveRobotPosition(.5, 15, FIND_LINE_FALSE);
+                    DriveSidewaysTime(1500, -.5);
+                    DriveRobotPosition(.5, -30, FIND_LINE_FALSE);
                 }
             }
         } else {
@@ -340,7 +345,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             dashboard.displayPrintf(3,"encoder: %d", robot.launchingMotor.getCurrentPosition());
             robot.launchingMotor.setTargetPosition(3350);
             robot.launchingMotor.setPower(.5);
-            sleep(3000);
+            sleep(2500);
             robot.launchingMotor.setPower(0.0);
         }
 
@@ -349,15 +354,15 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             if (longLaunch) {
                 sleep(4000);
             } else {
-                sleep(1400);
+                sleep(2000);
             }
             robot.armMotor.setPower(0);
             // sleep(1000);
 
             robot.launchingMotor.setTargetPosition(3350 * 2);
             robot.launchingMotor.setPower(.5);
-            sleep(3000);
-            robot.launchingMotor.setPower(0.0);
+            sleep(500);
+//            robot.launchingMotor.setPower(0.0);
         }
     }
 
@@ -808,7 +813,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 robot.rightMotorB.setPower(rightSpeed);
 
                 // look for line
-                if (findline == true)
+                if (findline)
                 {
                     counter += 1;
                     odsvalue = ods.getRawLightDetected();
