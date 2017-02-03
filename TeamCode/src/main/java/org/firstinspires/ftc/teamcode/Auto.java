@@ -47,27 +47,10 @@ import ftclib.*;
 import hallib.*;
 
 /**
- * This file illustrates the concept of driving a path based on time.
- * It uses the common Pushbot hardware class to define the drive on the robot.
- * The code is structured as a LinearOpMode
- *
- * The code assumes that you do NOT have encoders on the wheels,
- *   otherwise you would use: PushbotAutoDriveByEncoder;
- *
- *   The desired path in this example is:
- *   - Drive forward for 3 seconds
- *   - Spin right for 1.3 seconds
- *   - Drive Backwards for 1 Second
- *   - Stop and close the claw.
- *
- *  The code is written in a simple form with no optimizations.
- *  However, there are several ways that this type of sequence could be streamlined,
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ * DOCUMENTME
  */
 
-@Autonomous(name="Auto", group="Pushbot")
+@Autonomous(name="Auto", group="Ourbot")
 //@Disabled
 public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
     public enum Alliance {
@@ -87,78 +70,74 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         RUNMODE_AUTO,
         RUNMODE_DEBUG
     }
-    // Menu option variables
-    RunMode runmode = RunMode.RUNMODE_AUTO;
-    Alliance alliance = Alliance.ALLIANCE_RED;
-    int delay = 0;
-    StartPosition startposition = StartPosition.STARTPOSITION1;
-    int balls = 2;
-    int beacon = 2;
-    EndPosition endposition = EndPosition.ENDCENTER;
 
+    // Menu option variables
+    RunMode         runmode       = RunMode.RUNMODE_AUTO;
+    Alliance        alliance      = Alliance.ALLIANCE_RED;
+    int             delay         = 0;
+    StartPosition   startposition = StartPosition.STARTPOSITION1;
+    int             balls         = 2;
+    int             beacon        = 2;
+    EndPosition     endposition   = EndPosition.ENDCENTER;
 
     /* Declare OpMode members. */
     private HalDashboard dashboard;
-    OurHardware         robot   = new OurHardware();   // Use a Pushbot's hardware
-    private ElapsedTime     runtime = new ElapsedTime();
-    ModernRoboticsI2cGyro gyro    = null;                    // Additional Gyro device
-    ModernRoboticsI2cColorSensor color = null;
-    ModernRoboticsAnalogOpticalDistanceSensor ods = null;
+    OurHardware                               robot   = new OurHardware(); // Use Ourbot's hardware
+    ModernRoboticsI2cGyro                     gyro    = null;    // Additional Gyro device
+    ModernRoboticsI2cColorSensor              color   = null;
+    ModernRoboticsAnalogOpticalDistanceSensor ods     = null;
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1120 ;    // Neverrest 40 Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     COUNTS_PER_MOTOR_REV      = 1120;    // Neverest 40 Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION      = 1.0;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES     = 4.0;     // For figuring circumference
+    static final double     COUNTS_PER_INCH           = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+                                                        (WHEEL_DIAMETER_INCHES * 3.1415);
 
     // These constants define the desired driving/control characteristics
     // The can/should be tweaked to suite the specific robot drive train.
-    static final double     DRIVE_SPEED_NORMAL      = 0.25;     // Nominal speed for better accuracy.
-    static final double     TURN_SPEED              = 0.25;     // Nominal half speed for better accuracy.
+    static final double     HEADING_THRESHOLD         = 1;       // As tight as we can make it with an integer gyro
+    static final double     P_TURN_COEFF              = 0.1;     // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF             = 0.1;     // Larger is more responsive, but also less stable
 
-    static final double     HEADING_THRESHOLD       = 1 ;      // As tight as we can make it with an integer gyro
-    static final double     P_TURN_COEFF            = 0.1;     // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF           = 0.1;     // Larger is more responsive, but also less stable
+    static final boolean    FIND_LINE_TRUE            = true;
+    static final boolean    FIND_LINE_FALSE           = false;
 
-    static final double     FORWARD_SPEED = 0.6;
-
-    static final boolean    FIND_LINE_TRUE = true;
-    static final boolean    FIND_LINE_FALSE = false;
-
-    boolean runLonger = false;
-    boolean longLaunch = false;
+    boolean                 runLonger                 = false;
+    boolean                 longBallLoad              = false;
+    boolean                 ballLoaded                = true;
 
     @Override
     public void runOpMode() {
 
-        /*
-         * Initialize the drive system variables.
-         * The init() method of the hardware class does all the work here
-         */
+        // Initialize the drive system variables.
+        // The init() method of the hardware class does all the work here
         robot.init(hardwareMap);
-        dashboard = new HalDashboard(telemetry);
 
-        // Init Gyro -------------------------------------------------------------------------------
-        dashboard.displayPrintf(0,"Status: Calibrating Gyro");    //
+        // Initialize dashboard
+        dashboard = HalDashboard.createInstance(telemetry);
+
+        // Initialize gyro -------------------------------------------------------------------------
+        dashboard.displayPrintf(0,"Calibrating Gyro");
         gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         gyro.calibrate();
 
-        // make sure the gyro is calibrated before continuing
+        // Wait for the gyro to finish calibration before continuing
         while (gyro.isCalibrating())  {
             sleep(50);
             idle();
         }
         gyro.resetZAxisIntegrator();
 
-        // Init Color Sensor -----------------------------------------------------------------------
-        dashboard.displayPrintf(0,"Status: Init Color Sensor");
+        // Initialize color sensor -----------------------------------------------------------------
+        dashboard.displayPrintf(0,"Initializing Color Sensor");
         color = (ModernRoboticsI2cColorSensor)hardwareMap.colorSensor.get("color");
         color.enableLed(false);
 
-        // Init ods --------------------------------------------------------------------------------
+        // Initialize optical distance sensor ------------------------------------------------------
         ods = (ModernRoboticsAnalogOpticalDistanceSensor) hardwareMap.opticalDistanceSensor.get("ods");
         ods.enableLed(true);
 
-        // Init presser ----------------------------------------------------------------------------
+        // Initialize beacon pusher ----------------------------------------------------------------
         robot.beaconpusher.setPosition(0.1);
 
         robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -176,12 +155,19 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
         waitForStart();
 
-        // AUTONOMOUS START-------------------------------------------------------------------------
+        /*
+         * ----- AUTONOMOUS START-------------------------------------------------------------------
+         */
 
+        // Pause the program for the selected delay period
         sleep(delay);
+
+        // If we are not pressing the second beacon, we have extra time,
+        // so run the ball loader longer to increase chances of the ball loading correctly
         if (beacon < 2) {
-            longLaunch = true;
+            longBallLoad = true;
         }
+
         if (startposition == StartPosition.STARTPOSITION1) {
             if (DoTask("Setup Ball Launch", runmode)) {
                 if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1)
@@ -197,13 +183,13 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 if (beacon > 0) {
                     if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1) {
                         DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
-                        DriveTurngyro(0.25, 45.0);
+                        DriveRobotTurn(0.25, -45);
                         DriveRobotPosition(.25, 3, FIND_LINE_FALSE);
                         DriveSidewaysTime(1000, .5);
                         DriveRobothug(0.15, 20, FIND_LINE_TRUE);
                     } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
                         DriveRobotPosition(-.5, -27, FIND_LINE_FALSE);
-                        DriveTurngyro(0.25, -45.0);
+                        DriveRobotTurn(0.25, 45);
                         DriveRobotPosition(-.25, -3, FIND_LINE_FALSE);
                         DriveSidewaysTime(1000, .5);
                         DriveRobothug(-0.15, -20, FIND_LINE_TRUE);
@@ -272,7 +258,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 }
             }
         } else {
-            longLaunch = true;
+            longBallLoad = true;
             DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
             DriveTurngyro(0.1, -90.0);
             BallLaunch(balls);
@@ -283,8 +269,10 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         DoTask("End of autonomous", runmode);
     } // end of autonomous
 
-    // FUNCTIONS -----------------------------------------------------------------------------------
 
+    /**
+     * FUNCTIONS -----------------------------------------------------------------------------------
+     */
 
 
     boolean DoTask (String taskname, RunMode debug)
@@ -337,32 +325,33 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         }
     }
 
-    void BallLaunch(int ballnum) {
-        if (ballnum == 0) {
-            return;
-        }
-        else {
-            dashboard.displayPrintf(3,"encoder: %d", robot.launchingMotor.getCurrentPosition());
-            robot.launchingMotor.setTargetPosition(3350);
-            robot.launchingMotor.setPower(.5);
-            sleep(2500);
-            robot.launchingMotor.setPower(0.0);
-        }
-
-        if (ballnum == 2) {
-            robot.armMotor.setPower(1);
-            if (longLaunch) {
-                sleep(4000);
-            } else {
-                sleep(2000);
+    void BallLaunch (int ballsToLaunch) {
+        robot.launchingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        int ballsLaunched = 0;
+        while (ballsToLaunch > ballsLaunched) {
+            if (!ballLoaded) {
+                // Load ball
+                robot.loaderMotor.setPower(1);
+                if (longBallLoad) {
+                    sleep(4000);
+                } else {
+                    sleep(2000);
+                }
+                robot.loaderMotor.setPower(0);
+                // End load ball
             }
-            robot.armMotor.setPower(0);
-            // sleep(1000);
 
-            robot.launchingMotor.setTargetPosition(3350 * 2);
-            robot.launchingMotor.setPower(.5);
-            sleep(500);
-//            robot.launchingMotor.setPower(0.0);
+            // Display position data
+            dashboard.displayPrintf(3,"encoder: %d", robot.launchingMotor.getCurrentPosition());
+
+            // Launch ball
+            robot.launchingMotor.setTargetPosition(3360 * (ballsLaunched + 1));
+            robot.launchingMotor.setPower(1);
+            sleep(2000);
+
+            //
+            ballsLaunched += 1;
+            ballLoaded = false;
         }
     }
 
@@ -376,7 +365,9 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         DrivePowerAll(0);
 
     }
-// RobotDrivePosition (works best with .25 power)
+
+    // Do not use-dangerous! (uses while (x.isBusy) loop)
+    // RobotDrivePosition (works best with .25 power)
     void DriveRobotPosition(double power, int inches, boolean findline)
     {
         int position = -inches*90 ;
@@ -421,7 +412,16 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
     }
 
-    void DriveRobothug(double power, int inches, boolean findline)
+    // Do not use-dangerous! (uses while (x.isBusy) loop)
+    /**
+     * DriveRobotHug is used to make the robot drive hugging a wall.
+     * The robot will move mostly straight and slightly to the side,
+     * so it will stay against the wall.
+     * @param power Power to use while driving
+     * @param inches How many inches to drive
+     * @param findline Whether to stop if a white line is detected
+     */
+    void DriveRobothug (double power, int inches, boolean findline)
     {
         int position = -inches*90 ;
         int counter = 0;
@@ -476,8 +476,9 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         DrivePowerAll(0);
 
     }
-//RobotTurn
-    void DriveRobotTurn (int degree, double power)
+
+    // Do not use-dangerous! (uses while (x.isBusy) loop)
+    void DriveRobotTurn (double power, int degree)
     {
         int position = degree*19;
 
@@ -509,6 +510,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
     }
 
+    // Do not use-dangerous! (uses while (x.isBusy) loop)
     void DriveRobotSideways (int inches)
     {
 
@@ -541,6 +543,10 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         DrivePowerAll(0);
     }
 
+    /**
+     * DrivePowerAll sets all of the drive train motors to the specified power level.
+     * @param power Power level to set motors to
+     */
     void DrivePowerAll (double power)
     {
         robot.leftMotorF.setPower(power);
@@ -549,6 +555,12 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         robot.leftMotorB.setPower(power);
     }
 
+    /**
+     * DriveSidewaysTime makes the robot drive sideways for the specified time and power.
+     * @param time How long to drive
+     * @param power The power to use while driving,
+     *              positive values go right and negative values go left
+     */
     void DriveSidewaysTime (int time, double power)
     {
         robot.leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -556,24 +568,22 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         robot.rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if(power > 0) // right
+        if (power > 0) // Drive right
         {
             robot.leftMotorF.setPower(-power);
             robot.leftMotorB.setPower(power);
             robot.rightMotorB.setPower(-power);
             robot.rightMotorF.setPower(power);
         }
-        else // left
+        else // Drive left
         {
             robot.rightMotorF.setPower(power);
             robot.rightMotorB.setPower(-power);
             robot.leftMotorB.setPower(power);
             robot.leftMotorF.setPower(-power);
         }
-
-
+        // Continue driving for the specified amount of time, then stop
         sleep(time);
-
         DrivePowerAll(0);
     }
 
@@ -609,8 +619,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             }
 
         }
-        if (colorFound)
-            DrivePowerAll(0);
+        DrivePowerAll(0);
     }
 
     void DriveUntilColor (boolean beaconB, double power) {
@@ -643,8 +652,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 }
 
             }
-            if (colorFound)
-                DrivePowerAll(0);
+            DrivePowerAll(0);
         }
         else {
             while (!colorFound) {
@@ -654,9 +662,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 }
 
             }
-            if (colorFound)
-                DrivePowerAll(0);
-
+            DrivePowerAll(0);
         }
 
     }
@@ -700,8 +706,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 }
 
             }
-            if (colorFound)
-                DrivePowerAll(0);
+            DrivePowerAll(0);
         }
         else
         {
@@ -720,14 +725,15 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 }
 
             }
-            if (colorFound)
-                DrivePowerAll(0);
+            DrivePowerAll(0);
         }
     }
 
 
 
-// -------GYRO------------------------------------------------------------------------------------------
+    // ------- GYRO DRIVE FUNCTIONS ----------------------------------------------------------------
+
+    // Do not use-dangerous! (uses while (x.isBusy) loop)
     /**
      *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
      *  Move will stop if either of these conditions occur:
@@ -777,7 +783,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
             // start motion.
             speed = -speed;
-            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            speed = Range.clip(Math.abs(speed), -1.0, 1.0);
             robot.leftMotorF.setPower(speed);
             robot.rightMotorF.setPower(speed);
             robot.leftMotorB.setPower(speed);
@@ -824,7 +830,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                     }
                 }
 
-                // Display drive status for the driver.
+                // Display drive status for the driver
                 dashboard.displayPrintf(2,"Err/St: %5.1f/%5.1f",  error, steer);
                 dashboard.displayPrintf(3,"Target: %7d:%7d",      newLeftTarget,  newRightTarget);
                 dashboard.displayPrintf(4,"Actual: %7d:%7d",      robot.leftMotorF.getCurrentPosition(),
@@ -833,7 +839,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 dashboard.displayPrintf(6,"ods(%d): %5.2f",  counter, odsvalue);
             }
 
-            // Stop all motion;
+            // Stop all motion
             DrivePowerAll(0);
 
             // Turn off RUN_TO_POSITION
@@ -841,6 +847,8 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             robot.rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            // Display ODS data on dashboard
             dashboard.displayPrintf(8,"end ods %5.2f", ods.getRawLightDetected());
         }
     }
@@ -865,7 +873,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         robot.rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // keep looping while we are still active, and not on heading.
         while (opModeIsActive() && !onHeading(-speed, angle, P_TURN_COEFF)) {
-            // Update telemetry & Allow time for other processes to run.
+            // Update telemetry and allow time for other processes to run.
         }
     }
 
@@ -967,6 +975,8 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
     public double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1.0, 1.0);
     }
+    // ------- END GYRO DRIVE FUNCTIONS ------------------------------------------------------------
+
 
 
     // MENU ----------------------------------------------------------------------------------------
@@ -990,7 +1000,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         return gamepad1.dpad_left;
     }
 
-    private void doMenus()  {
+    private void doMenus() {
         FtcChoiceMenu modeMenu = new FtcChoiceMenu("Run Mode", null, this);
         FtcChoiceMenu allianceMenu = new FtcChoiceMenu("Alliance:", modeMenu, this);
         FtcChoiceMenu delayMenu = new FtcChoiceMenu("Delay:", allianceMenu, this);
@@ -1025,7 +1035,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         endpositionMenu.addChoice("Center", EndPosition.ENDCENTER, null);
 
 
-        FtcMenu.walkMenuTree(modeMenu);
+        FtcMenu.walkMenuTree(modeMenu, this);
         runmode = (RunMode) modeMenu.getCurrentChoiceObject();
         alliance = (Alliance) allianceMenu.getCurrentChoiceObject();
         delay = (int) delayMenu.getCurrentChoiceObject();
@@ -1034,17 +1044,13 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         beacon = (int) beaconsMenu.getCurrentChoiceObject();
         endposition = (EndPosition) endpositionMenu.getCurrentChoiceObject();
 
-        dashboard.displayPrintf(9, "Mode: %s (%s)",
-                modeMenu.getCurrentChoiceText(), runmode.toString());
-        dashboard.displayPrintf(10, "Alliance: %s (%s)",
-                allianceMenu.getCurrentChoiceText(), alliance.toString());
+        dashboard.displayPrintf(9, "Mode: %s (%s)", modeMenu.getCurrentChoiceText(), runmode.toString());
+        dashboard.displayPrintf(10, "Alliance: %s (%s)", allianceMenu.getCurrentChoiceText(), alliance.toString());
         dashboard.displayPrintf(11, "Delay = %d msec", delay);
         dashboard.displayPrintf(12, "Start position: %s (%s)", startpositionMenu.getCurrentChoiceText(), startposition.toString());
         dashboard.displayPrintf(13, "Balls = %d ", balls);
         dashboard.displayPrintf(14, "Beacon = %d", beacon);
-        dashboard.displayPrintf(15, "End Position = %s (%s)", endpositionMenu.getCurrentChoiceText(),endposition.toString());
-
+        dashboard.displayPrintf(15, "End Position = %s (%s)", endpositionMenu.getCurrentChoiceText(), endposition.toString());
     }
-
-//-------------------------------------------------------------------------------------------------
+    // END MENU ------------------------------------------------------------------------------------
 }

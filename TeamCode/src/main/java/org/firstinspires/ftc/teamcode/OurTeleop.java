@@ -33,16 +33,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.Range;
 
-import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RESET_ENCODERS;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 
 /**
- * This file provides basic Telop driving for our robot.
+ * This file provides basic Teleop driving for our robot.
  * The code is structured as an Iterative OpMode
  *
  * This OpMode uses the common Ourbot hardware class to define the devices on the robot.
@@ -57,48 +54,27 @@ public class OurTeleop extends OpMode {
 
     /* Declare OpMode members. */
     OurHardware robot       = new OurHardware(); // use the class created to define Ourbot's hardware
-    double clawposition     = 0.5;
-    int armposition         = 0;
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+
+    // Code to run once when the driver hits INIT
     @Override
     public void init() {
-        /* Initialize the hardware variables.
+        /*
+         * Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-
         robot.init(hardwareMap);
-//        robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        // Send telemetry message to signify robot waiting;
-        telemetry.addData("Say", "Hello Driver");
-        //
+        // Send telemetry message to signify robot waiting
+        telemetry.addData("Say", "Robot ready");
     }
 
     /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
-
-        //robot.launchingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    }
-
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     * Code to run in a loop after the driver hits play until they hit the stop button
      */
     @Override
     public void loop() {
+        // Send telemetry message to signify robot running
+        telemetry.addData("Say", "Running");
 
         double LF_y;
         double LB_y;
@@ -120,12 +96,12 @@ public class OurTeleop extends OpMode {
         double RotationRF;
         double RotationRB;
 
-        double armPower;
+        double loaderPower;
         double launchPower;
 
         boolean RightBumper;
 
-        //START OF SIDE DRIVE
+        // START OF SIDE DRIVE
         double SideDriveL = gamepad1.left_trigger;
         double SideDriveR = gamepad1.right_trigger;
         if (SideDriveL > 0.1) {
@@ -139,7 +115,7 @@ public class OurTeleop extends OpMode {
             robot.rightMotorF.setPower(SideDriveR);
             robot.rightMotorB.setPower(-SideDriveR);
         }
-        //END OF SIDE DRIVE
+        // END OF SIDE DRIVE
         else {
             // START OF TANK DRIVE
             LF_y = gamepad1.left_stick_y;
@@ -153,65 +129,8 @@ public class OurTeleop extends OpMode {
             robot.rightMotorB.setPower(RB_y);
             // END OF TANK DRIVE
         }
-        /*
-        // START OF MECANUM DRIVE
-        //(note: The joystick goes negative when pushed forwards, so negate it)
-        LF_y = (gamepad1.left_stick_y / 2.0);
-        LB_y = (gamepad1.left_stick_y / 2.0);
-        RF_y = (gamepad1.left_stick_y / 2.0);
-        RB_y = (gamepad1.left_stick_y / 2.0);
 
-        LF_x = -gamepad1.left_stick_x;
-        LB_x =  gamepad1.left_stick_x;
-        RF_x =  gamepad1.left_stick_x;
-        RB_x = -gamepad1.left_stick_x;
-
-        //RotationLF = -gamepad1.right_stick_x;
-        RotationLB = -gamepad1.right_stick_x;
-        RotationRF =  gamepad1.right_stick_x;
-        RotationRB =  gamepad1.right_stick_x;
-
-        LFront = (LF_y + LF_x);
-        LBack  = (LB_y + LB_x);
-        RFront = (RF_y + RF_x);
-        RBack  = (RB_y + RB_x);
-
-        if (LFront < -1) {
-
-            LFront = LFront - (LFront + 1);
-            LBack = LBack - (LFront + 1);
-            RFront = RFront - (LFront + 1);
-            RBack = RBack - (LFront + 1);
-
-        }
-
-
-
-        if (RBack > 1) {
-
-            LFront = LFront - (RBack - 1);
-            LBack = LBack - (RBack - 1);
-            RFront = RFront - (RBack - 1);
-            RBack = RBack - (RBack - 1);
-
-        }
-
-        if (gamepad1.right_stick_x > -0.1 && gamepad1.right_stick_x < 0.1 ) {
-        //    robot.leftMotorF.setPower(LFront);
-            robot.leftMotorB.setPower(LBack);
-            robot.rightMotorF.setPower(RFront);
-            robot.rightMotorB.setPower(RBack);
-        }
-        else {
-         //   robot.leftMotorF.setPower(RotationLF);
-            robot.leftMotorB.setPower(RotationLB);
-            robot.rightMotorF.setPower(RotationRF);
-            robot.rightMotorB.setPower(RotationRB);
-        }
-        // END OF MECANUM DRIVE
-        */
-
-        //Launching Arm Code And Claw Arm Code
+        // Launching arm code and loading mechanism code
 
         launchPower = (gamepad2.right_trigger);
         if(launchPower > 0.1) {
@@ -222,86 +141,30 @@ public class OurTeleop extends OpMode {
             robot.launchingMotor.setPower(0.0);
         }
         if (gamepad2.right_bumper) {
-            robot.launchingMotor.setMode(STOP_AND_RESET_ENCODER);
-            robot.launchingMotor.setTargetPosition(3350);
-            robot.launchingMotor.setMode(RUN_TO_POSITION);
-            robot.launchingMotor.setPower(.5);
+            if (robot.launchingMotor.getMode() == RUN_TO_POSITION  && !robot.launchingMotor.isBusy()) {
+                int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
+                robot.launchingMotor.setPower(0);
+                robot.launchingMotor.setTargetPosition(oneMoreTurn);
+                robot.launchingMotor.setPower(.5);
+            } else {
+                robot.launchingMotor.setMode(STOP_AND_RESET_ENCODER);
+                robot.launchingMotor.setTargetPosition(3360);
+                robot.launchingMotor.setMode(RUN_TO_POSITION);
+                robot.launchingMotor.setPower(.5);
+            }
         }
 
-
-
-        armPower = gamepad2.right_stick_y;
-        if (armPower > 0.15) {
-            armPower = armPower*armPower;
-            robot.armMotor.setPower(armPower);
-        } else if (armPower < -0.15){
-            armPower = -armPower*armPower;
-            robot.armMotor.setPower(armPower);
+        loaderPower = gamepad2.right_stick_y;
+        if (loaderPower > 0.15) {
+            loaderPower = loaderPower*loaderPower;
+            robot.loaderMotor.setPower(loaderPower);
+        } else if (loaderPower < -0.15){
+            loaderPower = -loaderPower*loaderPower;
+            robot.loaderMotor.setPower(loaderPower);
         }
         else {
-            robot.armMotor.setPower(0.0);
+            robot.loaderMotor.setPower(0.0);
         }
-
-//        if(gamepad2.x) {
-//            robot.armMotor.setMode(STOP_AND_RESET_ENCODER);
-//        }
-
-//        if (gamepad2.y) {
-//            robot.armMotor.setPower(0.0);
-//            robot.armMotor.setTargetPosition(1200);
-//            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.armMotor.setPower(-0.5);
-//        }
-//        if (gamepad2.right_bumper) {
-//            robot.armMotor.setPower(0.0);
-//            robot.armMotor.setTargetPosition(2400);
-//            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.armMotor.setPower(-0.5);
-//            // while (robot.armMotor.isBusy());
-//            // robot.armMotor.setPower(0);
-//        }
-
-//        if (gamepad2.left_bumper) {
-//            robot.armMotor.setPower(0.0);
-//            robot.armMotor.setTargetPosition(0);
-//            robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.armMotor.setPower(0.5);
-//            // while (robot.armMotor.isBusy());
-//            // robot.armMotor.setPower(0);
-//        }
-
-
-        /*
-        if (gamepad2.right_bumper) {
-            robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.launchingMotor.setTargetPosition(1280);
-            robot.launchingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.launchingMotor.setPower(-1.0);
-            while (robot.launchingMotor.isBusy());
-            robot.launchingMotor.setPower(0);
-        }
-        */
-
-//        if (gamepad2.b)
-//        {
-//            clawposition = clawposition - 0.005;
-//
-//        }
-//
-//        if (gamepad2.a)
-//        {
-//            clawposition = clawposition + 0.005;
-//
-//        }
-//
-//        clawposition = Range.clip(clawposition, 0.0, 0.3);
-//
-//        robot.claw.setPosition(clawposition);
-
-        // Send telemetry message to signify robot running
-//        telemetry.addData("claw position",  "Offset = %.2f", robot.claw.getPosition());
-        telemetry.addData("arm target",  "%d", armposition);
-        telemetry.addData("arm encoder", "%d %d", robot.armMotor.getCurrentPosition(), robot.armMotor.getMaxSpeed());
     }
 
 
@@ -309,6 +172,8 @@ public class OurTeleop extends OpMode {
     public void stop() {
         // Code here runs ONCE after the driver hits stop
 
+        // Stop launcher if launch in progress
+        robot.launchingMotor.setPower(0.0);
     }
 
 }

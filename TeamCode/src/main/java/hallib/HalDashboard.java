@@ -24,20 +24,19 @@ package hallib;
 
 import android.graphics.Paint;
 import android.widget.TextView;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.util.Locale;
 import java.util.NoSuchElementException;
 
-
 /**
- * This class is a wrapper for the Telemetry class. In addition to providing
- * a way to send named data to the Driver Station to be displayed, it also
- * simulates an LCD display similar to the NXT Mindstorms. The Mindstorms
- * has only 8 lines but this dashboard can support as many lines as the
- * Driver Station can support. By default, we set the number of lines to 16.
- * By changing a constant here, you can have as many lines as you want. This
- * dashboard display is very useful for displaying debug information. In
- * particular, the TrcMenu class uses the dashboard to display a choice menu
- * and interact with the user for choosing autonomous strategies and options.
+ * This class is a wrapper for the Telemetry class. In addition to providing a way to send named data to the Driver
+ * Station to be displayed, it also simulates an LCD display similar to the NXT Mindstorms. The Mindstorms has only
+ * 8 lines but this dashboard can support as many lines as the Driver Station can support. By default, we set the
+ * number of lines to 16. By changing a constant here, you can have as many lines as you want. This dashboard display
+ * is very useful for displaying debug information. In particular, the TrcMenu class uses the dashboard to display a
+ * choice menu and interact with the user for choosing autonomous strategies and options.
  */
 public class HalDashboard
 {
@@ -46,48 +45,49 @@ public class HalDashboard
     public static final int MAX_NUM_TEXTLINES = 16;
 
     private static final String displayKeyFormat = "%02d";
+    private static HalDashboard instance = null;
     private Telemetry telemetry = null;
     private Paint paint = null;
     private Telemetry.Item[] display = new Telemetry.Item[MAX_NUM_TEXTLINES];
-    private static HalDashboard instance = null;
-    /**
-     * Constructor: Creates an instance of the object.
-     * There should only be one global instance of this object.
-     * Typically, only the FtcOpMode object should construct an
-     * instance of this object via getInstance(telemetry) and
-     * nobody else.
-     *
-     * @param telemetry specifies the Telemetry object.
-     */
-    public HalDashboard(Telemetry telemetry)
-    {
-        instance = this;
-        this.telemetry = telemetry;
-        telemetry.clearAll();
-        telemetry.setAutoClear(false);
-        for (int i = 0; i < display.length; i++)
-        {
-            display[i] = telemetry.addData(String.format(displayKeyFormat, i), "");
-        }
-        telemetry.update();
-    }   //HalDashboard
 
-    /**
-     * This static method allows any class to get an instance of
-     * the dashboard so that it can display information on its
-     * display.
-     *
-     * @return global instance of the dashboard object.
-     */
+    public static HalDashboard createInstance(Telemetry telemetry)
+    {
+        if (instance == null)
+        {
+            instance = new HalDashboard(telemetry);
+        }
+
+        return instance;
+    }   //createInstance
+
     public static HalDashboard getInstance()
     {
         return instance;
     }   //getInstance
 
     /**
-     * This method sets the TextView object from which to query the typeface measurement for
-     * centering/right justifying messages. You don't need to call this method if you never
-     * centered or right justified messages on the dashboard.
+     * Constructor: Creates an instance of the object. There should only be one global instance of this object.
+     * Typically, only the FtcOpMode object should construct an instance of this object via getInstance(telemetry)
+     * and nobody else.
+     *
+     * @param telemetry specifies the Telemetry object.
+     */
+    private HalDashboard(Telemetry telemetry)
+    {
+
+        this.telemetry = telemetry;
+        telemetry.clearAll();
+        telemetry.setAutoClear(false);
+        for (int i = 0; i < display.length; i++)
+        {
+            display[i] = telemetry.addData(String.format(Locale.US, displayKeyFormat, i), "");
+        }
+        telemetry.update();
+    }   //HalDashboard
+
+    /**
+     * This method sets the TextView object from which to query the typeface measurement for centering/right justifying
+     * messages. You don't need to call this method if you never centered or right justified messages on the dashboard.
      *
      * @param textView specifies the TextView object.
      */
@@ -101,11 +101,10 @@ public class HalDashboard
      *
      * @param lineNum specifies the line number on the display.
      * @param text specifies the text message.
-     * @param fieldWidth specified the field width in pixel units that the message will be centered
-     *                   or right justified in. If specified 0, the message will be left justified.
-     * @param rightJustified specifies true if text message is right justified, false if text is
-     *                       centered. fieldWidth must be greater than 0. If not, this parameter is
-     *                       ignored.
+     * @param fieldWidth specified the field width in pixel units that the message will be centered or right justified
+     *                   in. If specified 0, the message will be left justified.
+     * @param rightJustified specifies true if text message is right justified, false if text is centered. fieldWidth
+     *                       must be greater than 0. If not, this parameter is ignored.
      */
     public void displayText(int lineNum, String text, int fieldWidth, boolean rightJustified)
     {
@@ -238,8 +237,7 @@ public class HalDashboard
     }   //refreshDisplay
 
     /**
-     * This method returns the value of the named boolean data read from the
-     * Telemetry class.
+     * This method returns the value of the named boolean data read from the Telemetry class.
      *
      * @param key specifies the name associated with the boolean data.
      * @return boolean data value.
@@ -267,9 +265,8 @@ public class HalDashboard
     }   //getBoolean
 
     /**
-     * This method returns the value of the named boolean data read from the
-     * Telemetry class. If the named data does not exist, it is created and
-     * assigned the given default value. Then it is sent to the Driver Station.
+     * This method returns the value of the named boolean data read from the Telemetry class. If the named data does
+     * not exist, it is created and assigned the given default value. Then it is sent to the Driver Station.
      *
      * @param key specifies the name associated with the boolean data.
      * @param defaultValue specifies the default value if it does not exist.
@@ -294,8 +291,7 @@ public class HalDashboard
     }   //getBoolean
 
     /**
-     * This method sets the named boolean data with the given value and also
-     * sends it to the Driver Station.
+     * This method sets the named boolean data with the given value and also sends it to the Driver Station.
      *
      * @param key specifies the name associated with the boolean data.
      * @param value specifies the data value.
@@ -308,8 +304,7 @@ public class HalDashboard
     }   //putBoolean
 
     /**
-     * This method returns the value of the named double data read from the
-     * Telemetry class.
+     * This method returns the value of the named double data read from the Telemetry class.
      *
      * @param key specifies the name associated with the double data.
      * @return double data value.
@@ -332,9 +327,8 @@ public class HalDashboard
     }   //getNumber
 
     /**
-     * This method returns the value of the named double data read from the
-     * Telemetry class. If the named data does not exist, it is created and
-     * assigned the given default value. Then it is sent to the Driver Station.
+     * This method returns the value of the named double data read from the Telemetry class. If the named data does
+     * not exist, it is created and assigned the given default value. Then it is sent to the Driver Station.
      *
      * @param key specifies the name associated with the double data.
      * @param defaultValue specifies the default value if it does not exist.
@@ -359,8 +353,7 @@ public class HalDashboard
     }   //getNumber
 
     /**
-     * This method sets the named double data with the given value and also
-     * sends it to the Driver Station.
+     * This method sets the named double data with the given value and also sends it to the Driver Station.
      *
      * @param key specifies the name associated with the double data.
      * @param value specifies the data value.
@@ -373,8 +366,7 @@ public class HalDashboard
     }   //putNumber
 
     /**
-     * This method returns the value of the named string data read from the
-     * Telemetry class.
+     * This method returns the value of the named string data read from the Telemetry class.
      *
      * @param key specifies the name associated with the string data.
      * @return string data value.
@@ -388,9 +380,8 @@ public class HalDashboard
     }   //getString
 
     /**
-     * This method returns the value of the named string data read from the
-     * Telemetry class. If the named data does not exist, it is created and
-     * assigned the given default value. Then it is sent to the Driver Station.
+     * This method returns the value of the named string data read from the Telemetry class. If the named data does
+     * not exist, it is created and assigned the given default value. Then it is sent to the Driver Station.
      *
      * @param key specifies the name associated with the string data.
      * @param defaultValue specifies the default value if it does not exist.
@@ -415,8 +406,7 @@ public class HalDashboard
     }   //getString
 
     /**
-     * This method sets the named string data with the given value and also
-     * sends it to the Driver Station.
+     * This method sets the named string data with the given value and also sends it to the Driver Station.
      *
      * @param key specifies the name associated with the string data.
      * @param value specifies the data value.
@@ -440,8 +430,8 @@ public class HalDashboard
     }   //getValue
 
     /**
-     * This method calculates the number of padding spaces to be inserted in front of the original text so that
-     * the text will be right justified within the given pixel width. The resulted string will be returned.
+     * This method calculates the number of padding spaces to be inserted in front of the original text so that the
+     * text will be right justified within the given pixel width. The resulted string will be returned.
      *
      * @param totalWidth specifies the total pixel width.
      * @param text specifies the text string.
@@ -449,14 +439,14 @@ public class HalDashboard
      */
     private String rightJustifiedText(int totalWidth, String text)
     {
-        int paddingSpaces = paint == null?
-                0: Math.round((totalWidth - paint.measureText(text))/paint.measureText(" "));
+        int paddingSpaces =
+                paint == null? 0: Math.round((totalWidth - paint.measureText(text))/paint.measureText(" "));
         return String.format("%" + (paddingSpaces + text.length()) + "s", text);
     }   //rightJustifiedText
 
     /**
-     * This method calculates the number of padding spaces to be inserted in front of the original text so that
-     * the text will be centered within the given pixel width. The resulted string will be returned.
+     * This method calculates the number of padding spaces to be inserted in front of the original text so that the
+     * text will be centered within the given pixel width. The resulted string will be returned.
      *
      * @param totalWidth specifies the total pixel width.
      * @param text specifies the text string.
@@ -464,9 +454,9 @@ public class HalDashboard
      */
     private String centeredText(int totalWidth, String text)
     {
-        int paddingSpaces = paint == null?
-                0: Math.round((totalWidth - paint.measureText(text))/paint.measureText(" ")/2);
+        int paddingSpaces =
+                paint == null? 0: Math.round((totalWidth - paint.measureText(text))/paint.measureText(" ")/2);
         return String.format("%" + (paddingSpaces + text.length()) + "s", text);
     }   //centeredText
 
-}   //class HalDashboard
+} //class HalDashboard

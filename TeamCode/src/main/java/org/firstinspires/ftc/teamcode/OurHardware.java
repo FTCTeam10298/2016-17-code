@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -18,11 +17,9 @@ public class OurHardware
     public DcMotor  leftMotorB      = null;
     public DcMotor  rightMotorF     = null;
     public DcMotor  rightMotorB     = null;
-
     public DcMotor  launchingMotor  = null;
-    public DcMotor  armMotor        = null;
+    public DcMotor loaderMotor      = null;
 
-    public Servo    claw            = null;
     public Servo    beaconpusher    = null;
 
     /* local OpMode members. */
@@ -39,45 +36,41 @@ public class OurHardware
         // Save reference to Hardware map
         hwMap = ahwMap;
 
-        // Define and Initialize Motors
+        // Define and initialize motors
         leftMotorF      = hwMap.dcMotor.get("left_drive_front");
         leftMotorB      = hwMap.dcMotor.get("left_drive_back");
         rightMotorF     = hwMap.dcMotor.get("right_drive_front");
         rightMotorB     = hwMap.dcMotor.get("right_drive_back");
-
         launchingMotor  = hwMap.dcMotor.get("launching_motor");
-        armMotor        = hwMap.dcMotor.get("arm_motor");
+        loaderMotor     = hwMap.dcMotor.get("arm_motor");
 
-
+        // Set direction for all motors
         leftMotorF.setDirection(DcMotor.Direction.REVERSE);
         leftMotorB.setDirection(DcMotor.Direction.REVERSE);
         rightMotorF.setDirection(DcMotor.Direction.FORWARD);
         rightMotorB.setDirection(DcMotor.Direction.FORWARD);
-
         launchingMotor.setDirection(DcMotor.Direction.FORWARD);
-        armMotor.setDirection(DcMotor.Direction.REVERSE);
+        loaderMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         leftMotorF.setPower(0);
         leftMotorB.setPower(0);
         rightMotorF.setPower(0);
         rightMotorB.setPower(0);
-
         launchingMotor.setPower(0);
-        armMotor.setPower(0);
+        loaderMotor.setPower(0);
 
-        // Set all motors to run with encoders.
+        // Set (almost) all motors to run with encoders.
         leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // FIXME
         launchingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // Define and initialize all installed servos.
-//        claw = hwMap.servo.get("claw");
-//        claw.setPosition(0.24);
+        // This motor does not use an encoder
+        loaderMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        // Define and initialize all installed servos.
         beaconpusher = hwMap.servo.get("beacon");
         beaconpusher.setPosition(0.1);
     }
@@ -89,11 +82,11 @@ public class OurHardware
      *
      * @param periodMs  Length of wait cycle in mSec.
      */
-    public void waitForTick(long periodMs) {
+    public void waitForTick (long periodMs) {
 
-        long  remaining = periodMs - (long)period.milliseconds();
+        long remaining = periodMs - (long)period.milliseconds();
 
-        // sleep for the remaining portion of the regular cycle period.
+        // Sleep for the remaining portion of the regular cycle period.
         if (remaining > 0) {
             try {
                 Thread.sleep(remaining);

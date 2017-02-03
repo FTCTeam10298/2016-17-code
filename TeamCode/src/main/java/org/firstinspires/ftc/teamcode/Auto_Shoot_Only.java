@@ -33,6 +33,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -42,7 +43,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="Auto Shoot Only", group="Ourbot")
-//@Disabled
+@Disabled
 public class Auto_Shoot_Only extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -65,18 +66,18 @@ public class Auto_Shoot_Only extends LinearOpMode {
         telemetry.update();
 
         robot.init(hardwareMap);
-        robot.armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.armMotor.setTargetPosition(0);
-        robot.armMotor.setPower(0.0);
+        robot.loaderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.loaderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.loaderMotor.setTargetPosition(0);
+        robot.loaderMotor.setPower(0.0);
 
         robot.init(hardwareMap);
         robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.launchingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.launchingMotor.setTargetPosition(0);
         robot.launchingMotor.setPower(0.0);
-//        robot.armMotor.setMaxSpeed(1000);
-//        robot.armMotor.setMaxSpeed(1000);
+//        robot.loaderMotor.setMaxSpeed(1000);
+//        robot.loaderMotor.setMaxSpeed(1000);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -93,9 +94,9 @@ public class Auto_Shoot_Only extends LinearOpMode {
         }
         robot.launchingMotor.setPower(0.0);
 
-        robot.armMotor.setPower(1);
+        robot.loaderMotor.setPower(1);
         sleep(1400);
-        robot.armMotor.setPower(0);
+        robot.loaderMotor.setPower(0);
         // sleep(1000);
 
         robot.launchingMotor.setTargetPosition(3350 * 2);
