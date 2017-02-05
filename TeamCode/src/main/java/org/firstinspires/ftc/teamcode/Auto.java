@@ -346,7 +346,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
             // Launch ball
             robot.launchingMotor.setTargetPosition(3360 * (ballsLaunched + 1));
-            robot.launchingMotor.setPower(1);
+            robot.launchingMotor.setPower(0.5);
             sleep(2000);
 
             //
@@ -502,7 +502,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         robot.rightMotorB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.leftMotorB.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while (robot.leftMotorF.isBusy() || robot.rightMotorF.isBusy() || robot.rightMotorB.isBusy() || robot.leftMotorB.isBusy()) {
+        while (robot.leftMotorF.isBusy() && robot.rightMotorF.isBusy() && robot.rightMotorB.isBusy() && robot.leftMotorB.isBusy()) {
             dashboard.displayPrintf(3,"encoder: %d", robot.leftMotorF.getCurrentPosition());
         }
 
