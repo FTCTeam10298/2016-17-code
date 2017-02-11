@@ -96,12 +96,18 @@ public class OurTeleop extends OpMode {
         double RotationRF;
         double RotationRB;
 
+        boolean LeftDrive;
+        boolean RightDrive;
+
         double loaderPower;
         double launchPower;
 
         boolean RightBumper;
 
-        // START OF SIDE DRIVE
+        double TurnRight;
+        double TurnLeft;
+
+      /*  // START OF SIDE DRIVE
         double SideDriveL = gamepad1.left_trigger;
         double SideDriveR = gamepad1.right_trigger;
         if (SideDriveL > 0.1) {
@@ -128,20 +134,91 @@ public class OurTeleop extends OpMode {
             robot.rightMotorF.setPower(RF_y);
             robot.rightMotorB.setPower(RB_y);
             // END OF TANK DRIVE
+
+      }
+ */
+
+        //START OF DPAD DRIVE
+
+        if (gamepad1.dpad_right) {
+            robot.leftMotorF.setPower(-1);
+            robot.leftMotorB.setPower(1);
+            robot.rightMotorF.setPower(1);
+            robot.rightMotorB.setPower(-1);
         }
+        else if (gamepad1.dpad_left) {
+            robot.leftMotorF.setPower(1);
+            robot.leftMotorB.setPower(-1);
+            robot.rightMotorF.setPower(-1);
+            robot.rightMotorB.setPower(1);
+        }
+        else if (gamepad1.dpad_down) {
+            robot.leftMotorF.setPower(1);
+            robot.leftMotorB.setPower(1);
+            robot.rightMotorF.setPower(1);
+            robot.rightMotorB.setPower(1);
+        }
+        else if (gamepad1.dpad_up) {
+            TurnRight = gamepad1.right_trigger;
+            TurnLeft = gamepad1.left_trigger;
+
+            if (gamepad1.right_trigger > 0.1) {
+                robot.leftMotorF.setPower(-1);
+                robot.leftMotorB.setPower(-1);
+                robot.rightMotorF.setPower(-1 + TurnRight);
+                robot.rightMotorB.setPower(-1 + TurnRight);
+            }
+            else if (gamepad1.left_trigger > 0.1) {
+                robot.leftMotorF.setPower(-1 + TurnLeft);
+                robot.leftMotorB.setPower(-1 + TurnLeft);
+                robot.rightMotorF.setPower(-1);
+                robot.rightMotorB.setPower(-1);
+            }
+            else {
+                robot.leftMotorF.setPower(-1);
+                robot.leftMotorB.setPower(-1);
+                robot.rightMotorF.setPower(-1);
+                robot.rightMotorB.setPower(-1);
+            }
+        }
+        else if (gamepad1.right_bumper) {
+                robot.leftMotorF.setPower (-1);
+                robot.leftMotorB.setPower (-1);
+                robot.rightMotorF.setPower (1);
+                robot.rightMotorB.setPower (1);
+        }
+        else if (gamepad1.left_bumper) {
+                robot.leftMotorF.setPower (1);
+                robot.leftMotorB.setPower (1);
+                robot.rightMotorF.setPower (-1);
+                robot.rightMotorB.setPower (-1);
+        }
+        else {
+
+            LF_y = gamepad1.left_stick_y;
+            LB_y = gamepad1.left_stick_y;
+            RF_y = gamepad1.right_stick_y;
+            RB_y = gamepad1.right_stick_y;
+
+            robot.leftMotorF.setPower(LF_y);
+            robot.leftMotorB.setPower(LB_y);
+            robot.rightMotorF.setPower(RF_y);
+            robot.rightMotorB.setPower(RB_y);
+        }
+        //START OF CURVE DRIVE
+
 
         // Launching arm code and loading mechanism code
 
         launchPower = (gamepad2.right_trigger);
-        if(launchPower > 0.1) {
+        if (launchPower > 0.1) {
             robot.launchingMotor.setMode(RUN_USING_ENCODER);
             robot.launchingMotor.setPower(launchPower);
-        }
-        else if (robot.launchingMotor.getMode() == RUN_USING_ENCODER) {
+        } else if (robot.launchingMotor.getMode() == RUN_USING_ENCODER) {
             robot.launchingMotor.setPower(0.0);
         }
         if (gamepad2.right_bumper) {
-            if (robot.launchingMotor.getMode() == RUN_TO_POSITION  && !robot.launchingMotor.isBusy()) {
+            if (robot.launchingMotor.getMode() == RUN_TO_POSITION && !robot.launchingMotor.isBusy()) {
                 int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
                 robot.launchingMotor.setPower(0);
                 robot.launchingMotor.setTargetPosition(oneMoreTurn);
@@ -156,24 +233,24 @@ public class OurTeleop extends OpMode {
 
         loaderPower = gamepad2.right_stick_y;
         if (loaderPower > 0.15) {
-            loaderPower = loaderPower*loaderPower;
+            loaderPower = loaderPower * loaderPower;
             robot.loaderMotor.setPower(loaderPower);
-        } else if (loaderPower < -0.15){
-            loaderPower = -loaderPower*loaderPower;
+        } else if (loaderPower < -0.15) {
+            loaderPower = -loaderPower * loaderPower;
             robot.loaderMotor.setPower(loaderPower);
-        }
-        else {
+        } else {
             robot.loaderMotor.setPower(0.0);
         }
     }
 
+            @Override
+            public void stop () {
+                // Code here runs ONCE after the driver hits stop
 
-    @Override
-    public void stop() {
-        // Code here runs ONCE after the driver hits stop
+                // Stop launcher if launch in progress
+                robot.launchingMotor.setPower(0.0);
+            }
 
-        // Stop launcher if launch in progress
-        robot.launchingMotor.setPower(0.0);
+
+
     }
-
-}

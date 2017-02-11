@@ -117,20 +117,20 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         dashboard = HalDashboard.createInstance(telemetry);
 
         // Initialize gyro -------------------------------------------------------------------------
-        dashboard.displayPrintf(0,"Calibrating Gyro");
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        dashboard.displayPrintf(0, "Calibrating Gyro");
+        gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         gyro.calibrate();
 
         // Wait for the gyro to finish calibration before continuing
-        while (gyro.isCalibrating())  {
+        while (gyro.isCalibrating()) {
             sleep(50);
             idle();
         }
         gyro.resetZAxisIntegrator();
 
         // Initialize color sensor -----------------------------------------------------------------
-        dashboard.displayPrintf(0,"Initializing Color Sensor");
-        color = (ModernRoboticsI2cColorSensor)hardwareMap.colorSensor.get("color");
+        dashboard.displayPrintf(0, "Initializing Color Sensor");
+        color = (ModernRoboticsI2cColorSensor) hardwareMap.colorSensor.get("color");
         color.enableLed(false);
 
         // Initialize optical distance sensor ------------------------------------------------------
@@ -147,11 +147,11 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
         // Wait for the game to start (driver presses PLAY)
         doMenus();
-        dashboard.displayPrintf(0,"Status: Ready to start");
-        dashboard.displayPrintf(3,"Gyro  %d", gyro.getIntegratedZValue());
-        dashboard.displayPrintf(4,"Red   %d", color.red());
-        dashboard.displayPrintf(5,"Green %d", color.green());
-        dashboard.displayPrintf(6,"Blue  %d", color.blue());
+        dashboard.displayPrintf(0, "Status: Ready to start");
+        dashboard.displayPrintf(3, "Gyro  %d", gyro.getIntegratedZValue());
+        dashboard.displayPrintf(4, "Red   %d", color.red());
+        dashboard.displayPrintf(5, "Green %d", color.green());
+        dashboard.displayPrintf(6, "Blue  %d", color.blue());
 
         waitForStart();
 
@@ -184,8 +184,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                     if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1) {
                         DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
                         DriveRobotTurn(0.25, -45);
-                        DriveRobotPosition(.25, 3, FIND_LINE_FALSE);
-                        DriveSidewaysTime(1000, .5);
+                        DriveSidewaysTime(1000, .9);
                         DriveRobothug(0.15, 20, FIND_LINE_TRUE);
                     } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
                         DriveRobotPosition(-.5, -27, FIND_LINE_FALSE);
@@ -206,10 +205,12 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                     if (alliance == Alliance.ALLIANCE_BLUE) {
                         if (runLonger) {
                             DriveRobothug(.5, 49, FIND_LINE_FALSE);
+
                         } else {
                             DriveRobothug(.5, 42, FIND_LINE_FALSE);
+
                         }
-                        DriveSidewaysTime(500, .5);
+                        DriveSidewaysTime(500, .9);
                         DriveRobothug(.15, 25, FIND_LINE_TRUE);
                     } else {
                         DriveRobothug(-.5, -35, FIND_LINE_FALSE);
@@ -241,10 +242,10 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             } else {
                 if (endposition == EndPosition.ENDCORNER && beacon == 2) {
                     DriveSidewaysTime(1000, -.5);
-                    DriveRobotPosition(.5, -80, FIND_LINE_FALSE);
+                    DriveRobotPosition(.75, -80, FIND_LINE_FALSE);
                 } else if (endposition == EndPosition.ENDCORNER && beacon == 1) {
                     DriveSidewaysTime(1000, -.5);
-                    DriveRobotPosition(.5, -48, FIND_LINE_FALSE);
+                    DriveRobotPosition(.75, -48, FIND_LINE_FALSE);
                 } else if (endposition == EndPosition.ENDCENTER && beacon == 2) {
                     DriveSidewaysTime(1000, -.5);
                     DriveTurngyro(0.5, 13.0);
@@ -257,18 +258,25 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                     DriveRobotPosition(.5, -30, FIND_LINE_FALSE);
                 }
             }
-        } else {
-            longBallLoad = true;
-            DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
-            DriveTurngyro(0.1, -90.0);
-            BallLaunch(balls);
-            DriveTurngyro(0.1, 0.0);
-            DriveRobotPosition(.5, 35, FIND_LINE_FALSE);
+        } else if (startposition == StartPosition.STARTPOSITION2) {
+            if (DoTask("Setup Ball Launch", runmode)) {
+                longBallLoad = true;
+                DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
+                DriveTurngyro(0.1, -90.0);
+            }
+            if (DoTask("Ball Launch", runmode))
+                BallLaunch(balls);
+            if (DoTask("Go to Beacon 1", runmode)) {
+                DriveTurngyro(0.1, 0.0);
+                DriveRobotPosition(1, 35, FIND_LINE_FALSE);
+                sleep(500);
+                //DriveRobotPosition(.5, 65, FIND_LINE_FALSE);
+            }
         }
 
-        DoTask("End of autonomous", runmode);
-    } // end of autonomous
-
+            DoTask("End of autonomous", runmode);
+        } // end of autonomous
+    }
 
     /**
      * FUNCTIONS -----------------------------------------------------------------------------------
