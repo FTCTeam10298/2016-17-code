@@ -185,6 +185,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                         DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
                         DriveRobotTurn(0.25, -45);
                         DriveSidewaysTime(1000, .9);
+                        DriveRobotPosition(-.5, -4, FIND_LINE_FALSE);
                         DriveRobothug(0.15, 20, FIND_LINE_TRUE);
                     } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
                         DriveRobotPosition(-.5, -27, FIND_LINE_FALSE);
@@ -274,9 +275,10 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             }
         }
 
-            DoTask("End of autonomous", runmode);
-        } // end of autonomous
-    }
+        DoTask("End of autonomous", runmode);
+    }// end of autonomous
+
+
 
     /**
      * FUNCTIONS -----------------------------------------------------------------------------------
