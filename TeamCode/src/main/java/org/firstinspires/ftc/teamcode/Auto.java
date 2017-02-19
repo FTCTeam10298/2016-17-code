@@ -487,7 +487,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
     }
 
-    // Do not use-dangerous! (uses while (x.isBusy) loop)
+
     void DriveRobotTurn (double power, int degree)
     {
         int position = degree*19;

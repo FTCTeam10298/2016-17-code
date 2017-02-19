@@ -33,6 +33,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
+import com.qualcomm.robotcore.util.Range;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
@@ -54,6 +57,13 @@ public class OurTeleop extends OpMode {
 
     /* Declare OpMode members. */
     OurHardware robot       = new OurHardware(); // use the class created to define Ourbot's hardware
+    ModernRoboticsAnalogOpticalDistanceSensor ods     = null;
+//findlines
+    static final boolean    FIND_LINE_TRUE            = true;
+    static final boolean    FIND_LINE_FALSE           = false;
+    int counter = 0;
+    boolean FINDLINE = false;
+
 
     // Code to run once when the driver hits INIT
     @Override
@@ -63,6 +73,10 @@ public class OurTeleop extends OpMode {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+        // Initialize optical distance sensor ------------------------------------------------------
+                ods = (ModernRoboticsAnalogOpticalDistanceSensor) hardwareMap.opticalDistanceSensor.get("ods");
+        ods.enableLed(true);
+
 
         // Send telemetry message to signify robot waiting
         telemetry.addData("Say", "Robot ready");
@@ -106,6 +120,9 @@ public class OurTeleop extends OpMode {
 
         double TurnRight;
         double TurnLeft;
+
+        double servoposition = .1;
+
 
       /*  // START OF SIDE DRIVE
         double SideDriveL = gamepad1.left_trigger;
@@ -193,8 +210,18 @@ public class OurTeleop extends OpMode {
                 robot.rightMotorF.setPower (-1);
                 robot.rightMotorB.setPower (-1);
         }
+        //START OF HUG
+        else if (gamepad2.left_stick_x > .1){
+            DriveRobothug(-gamepad2.left_stick_x);
+        }
+        else if (gamepad2.left_stick_x < -.1){
+            DriveRobothug(-gamepad2.left_stick_x);
+        }
+        else if (gamepad2.left_stick_y < -.5 ){
+            DriveSideways(-gamepad2.left_stick_y);
+        }
         else {
-
+            FINDLINE = false;
             LF_y = gamepad1.left_stick_y;
             LB_y = gamepad1.left_stick_y;
             RF_y = gamepad1.right_stick_y;
@@ -241,6 +268,31 @@ public class OurTeleop extends OpMode {
         } else {
             robot.loaderMotor.setPower(0.0);
         }
+  /*      //START OF GAMEPAD 2 MANUEL OVERRIDE
+        if (gamepad2.left_stick_y > .1){
+            DriveSideways(.5);
+        }
+        else if (gamepad2.left_stick_y < -.1){
+            DriveSideways(-.5);
+        }
+        if (gamepad2.left_stick_x > 1){
+            DrivePowerAll(.5);
+        }
+        else if (gamepad2.left_stick_x < 1){
+            DrivePowerAll(-.5);
+        }
+        */
+
+
+        //START OF SERVO BEACON PUSHER
+        if (FINDLINE == false) {
+            if (gamepad2.left_trigger > .2) {
+                servoposition = gamepad2.left_trigger / 2;
+            } else {
+                servoposition = .1;
+            }
+            robot.beaconpusher.setPosition(servoposition);
+        }
     }
 
             @Override
@@ -251,6 +303,104 @@ public class OurTeleop extends OpMode {
                 robot.launchingMotor.setPower(0.0);
             }
 
+    /*
+    FUNCTIONS------------------------------------------------------------------------------------------------------
+     */
+    void DrivePowerAll (double power)
+    {
+        robot.leftMotorF.setPower(power);
+        robot.rightMotorF.setPower(power);
+        robot.rightMotorB.setPower(power);
+        robot.leftMotorB.setPower(power);
+    }
+    void DriveRobothug (double power)
+    {
+        power = Range.clip(power, -.9, .9);
+        if (gamepad2.a) {
+            if (ods.getRawLightDetected() > .5) {
+                FINDLINE = true;
+                if (power > 0) {
+                    int position = 3*90 ;
+                    robot.leftMotorF.setMode(STOP_AND_RESET_ENCODER);
+                    robot.leftMotorB.setMode(STOP_AND_RESET_ENCODER);
+                    robot.rightMotorF.setMode(STOP_AND_RESET_ENCODER);
+                    robot.rightMotorB.setMode(STOP_AND_RESET_ENCODER);
 
+                    DrivePowerAll(1);
+
+                    robot.leftMotorF.setTargetPosition(position);
+                    robot.leftMotorB.setTargetPosition(position);
+                    robot.rightMotorF.setTargetPosition(position);
+                    robot.rightMotorB.setTargetPosition(position);
+
+                    robot.leftMotorF.setMode(RUN_TO_POSITION);
+                    robot.leftMotorB.setMode(RUN_TO_POSITION);
+                    robot.rightMotorF.setMode(RUN_TO_POSITION);
+                    robot.rightMotorB.setMode(RUN_TO_POSITION);
+                }
+            }
+        }
+        if (FINDLINE == true){
+            if (power < 0) {
+                DrivePowerAll(0);
+                robot.beaconpusher.setPosition(.5);
+            }
+            else if (robot.leftMotorF.isBusy() == false || robot.leftMotorB.isBusy() == false || robot.rightMotorF.isBusy() == false || robot.rightMotorB.isBusy() == false){
+                robot.beaconpusher.setPosition(.5);
+                DrivePowerAll(0);
+
+                robot.leftMotorF.setMode(RUN_USING_ENCODER);
+                robot.leftMotorB.setMode(RUN_USING_ENCODER);
+                robot.rightMotorF.setMode(RUN_USING_ENCODER);
+                robot.rightMotorB.setMode(RUN_USING_ENCODER);
+            }
+
+        }
+        else {
+            robot.leftMotorF.setMode(RUN_USING_ENCODER);
+            robot.leftMotorB.setMode(RUN_USING_ENCODER);
+            robot.rightMotorF.setMode(RUN_USING_ENCODER);
+            robot.rightMotorB.setMode(RUN_USING_ENCODER);
+
+            FINDLINE = false;
+            counter=0;
+            if (power > 0) {
+                robot.leftMotorF.setPower(-power * .9);
+                robot.rightMotorF.setPower(-power);
+                robot.rightMotorB.setPower(-power * .9);
+                robot.leftMotorB.setPower(-power);
+            } else {
+                robot.leftMotorF.setPower(-power);
+                robot.rightMotorF.setPower(-power * .9);
+                robot.rightMotorB.setPower(-power);
+                robot.leftMotorB.setPower(-power * .9);
+
+            }
+        }
+    }
+    void DriveSideways (double power)
+    {
+        robot.leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (power > 0) // Drive right
+        {
+            robot.leftMotorF.setPower(-power);
+            robot.leftMotorB.setPower(power);
+            robot.rightMotorB.setPower(-power);
+            robot.rightMotorF.setPower(power);
+        }
+        else // Drive left
+        {
+            robot.rightMotorF.setPower(power);
+            robot.rightMotorB.setPower(-power);
+            robot.leftMotorB.setPower(power);
+            robot.leftMotorF.setPower(-power);
+        }
 
     }
+
+
+}
