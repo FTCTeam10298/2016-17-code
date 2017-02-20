@@ -63,6 +63,7 @@ public class OurTeleop extends OpMode {
     static final boolean    FIND_LINE_FALSE           = false;
     int counter = 0;
     boolean FINDLINE = false;
+    double maxODS = 0;
 
 
     // Code to run once when the driver hits INIT
@@ -88,7 +89,12 @@ public class OurTeleop extends OpMode {
     @Override
     public void loop() {
         // Send telemetry message to signify robot running
-        telemetry.addData("Say", "Running");
+        telemetry.addData("Say", "Runninadg");
+        telemetry.addData("ods", maxODS);
+
+        if (gamepad2.y){
+            maxODS = 0;
+        }
 
         double LF_y;
         double LB_y;
@@ -220,6 +226,17 @@ public class OurTeleop extends OpMode {
         else if (gamepad2.left_stick_y < -.5 ){
             DriveSideways(-gamepad2.left_stick_y);
         }
+        else if (gamepad2.left_stick_y > -.5 ){
+            DriveSideways(-gamepad2.left_stick_y);
+        }
+        else if (gamepad2.dpad_right){
+            robot.rightMotorF.setPower(.5);
+            robot.rightMotorB.setPower(.5);
+        }
+        else if (gamepad2.dpad_left){
+            robot.rightMotorF.setPower(-.5);
+            robot.rightMotorB.setPower(-.5);
+        }
         else {
             FINDLINE = false;
             LF_y = gamepad1.left_stick_y;
@@ -317,7 +334,11 @@ public class OurTeleop extends OpMode {
     {
         power = Range.clip(power, -.9, .9);
         if (gamepad2.a) {
-            if (ods.getRawLightDetected() > .5) {
+            double ODS = ods.getLightDetected();
+            if (ODS > maxODS){
+                maxODS = ODS;
+            }
+            if (ODS > .5) {
                 FINDLINE = true;
                 if (power > 0) {
                     int position = 3*90 ;
