@@ -226,7 +226,7 @@ public class OurTeleop extends OpMode {
         else if (gamepad2.left_stick_y < -.5 ){
             DriveSideways(-gamepad2.left_stick_y);
         }
-        else if (gamepad2.left_stick_y > -.5 ){
+        else if (gamepad2.left_stick_y > .5 ){
             DriveSideways(-gamepad2.left_stick_y);
         }
         else if (gamepad2.dpad_right){
