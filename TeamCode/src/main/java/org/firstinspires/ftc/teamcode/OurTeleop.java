@@ -58,12 +58,14 @@ public class OurTeleop extends OpMode {
     /* Declare OpMode members. */
     OurHardware robot       = new OurHardware(); // use the class created to define Ourbot's hardware
     ModernRoboticsAnalogOpticalDistanceSensor ods     = null;
-//findlines
+    //findlines
+    /*
     static final boolean    FIND_LINE_TRUE            = true;
     static final boolean    FIND_LINE_FALSE           = false;
+    */
     int counter = 0;
     boolean FINDLINE = false;
-    double maxODS = 0;
+    double ODSvalue = 0;
 
 
     // Code to run once when the driver hits INIT
@@ -90,17 +92,16 @@ public class OurTeleop extends OpMode {
     public void loop() {
         // Send telemetry message to signify robot running
         telemetry.addData("Say", "Runninadg");
-        telemetry.addData("ods", maxODS);
+        telemetry.addData("ods", ODSvalue);
 
-        if (gamepad2.y){
-            maxODS = 0;
-        }
+
 
         double LF_y;
         double LB_y;
         double RB_y;
         double RF_y;
 
+        /*
         double LF_x;
         double LB_x;
         double RF_x;
@@ -119,15 +120,16 @@ public class OurTeleop extends OpMode {
         boolean LeftDrive;
         boolean RightDrive;
 
+        boolean RightBumper;
+        */
+
         double loaderPower;
         double launchPower;
-
-        boolean RightBumper;
 
         double TurnRight;
         double TurnLeft;
 
-        double servoposition = .1;
+        double servoposition;
 
 
       /*  // START OF SIDE DRIVE
@@ -230,12 +232,12 @@ public class OurTeleop extends OpMode {
             DriveSideways(-gamepad2.left_stick_y);
         }
         else if (gamepad2.dpad_right){
-            robot.rightMotorF.setPower(.5);
-            robot.rightMotorB.setPower(.5);
+            robot.rightMotorF.setPower(.75);
+            robot.rightMotorB.setPower(.75);
         }
         else if (gamepad2.dpad_left){
-            robot.rightMotorF.setPower(-.5);
-            robot.rightMotorB.setPower(-.5);
+            robot.rightMotorF.setPower(-.75);
+            robot.rightMotorB.setPower(-.75);
         }
         else {
             FINDLINE = false;
@@ -302,7 +304,7 @@ public class OurTeleop extends OpMode {
 
 
         //START OF SERVO BEACON PUSHER
-        if (FINDLINE == false) {
+        if (!FINDLINE) {
             if (gamepad2.left_trigger > .2) {
                 servoposition = gamepad2.left_trigger / 2;
             } else {
@@ -334,14 +336,12 @@ public class OurTeleop extends OpMode {
     {
         power = Range.clip(power, -.9, .9);
         if (gamepad2.a) {
-            double ODS = ods.getLightDetected();
-            if (ODS > maxODS){
-                maxODS = ODS;
-            }
-            if (ODS > .5) {
+            ODSvalue = ods.getRawLightDetected();
+
+            if (ODSvalue > .35) {
                 FINDLINE = true;
                 if (power > 0) {
-                    int position = 3*90 ;
+                    int position = 2*90 ;
                     robot.leftMotorF.setMode(STOP_AND_RESET_ENCODER);
                     robot.leftMotorB.setMode(STOP_AND_RESET_ENCODER);
                     robot.rightMotorF.setMode(STOP_AND_RESET_ENCODER);
@@ -361,12 +361,12 @@ public class OurTeleop extends OpMode {
                 }
             }
         }
-        if (FINDLINE == true){
+        if (FINDLINE){
             if (power < 0) {
                 DrivePowerAll(0);
                 robot.beaconpusher.setPosition(.5);
             }
-            else if (robot.leftMotorF.isBusy() == false || robot.leftMotorB.isBusy() == false || robot.rightMotorF.isBusy() == false || robot.rightMotorB.isBusy() == false){
+            else if (!robot.leftMotorF.isBusy() || !robot.leftMotorB.isBusy() || !robot.rightMotorF.isBusy() || !robot.rightMotorB.isBusy()){
                 robot.beaconpusher.setPosition(.5);
                 DrivePowerAll(0);
 
