@@ -41,6 +41,8 @@ import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 /**
  * This file provides basic Teleop driving for our robot.
  * The code is structured as an Iterative OpMode
@@ -78,6 +80,8 @@ public class OurTeleop extends OpMode {
 
     Boolean launchAfterLoad = false;
     Boolean stillLoading = false;
+
+    private ElapsedTime msAfterLaunch = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
     // Code to run once when the driver hits INIT
     @Override
@@ -253,17 +257,21 @@ public class OurTeleop extends OpMode {
             robot.loaderMotor.setPower(0);
         }
         if (launchAfterLoad && !stillLoading) {
+            msAfterLaunch.reset();
             if (robot.launchingMotor.getMode() == RUN_TO_POSITION) {
                 int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
                 robot.launchingMotor.setPower(0);
                 robot.launchingMotor.setTargetPosition(oneMoreTurn);
-                robot.launchingMotor.setPower(.5);
+                robot.launchingMotor.setPower(1.0);
             } else {
                 robot.launchingMotor.setMode(STOP_AND_RESET_ENCODER);
                 robot.launchingMotor.setTargetPosition(3360);
                 robot.launchingMotor.setMode(RUN_TO_POSITION);
-                robot.launchingMotor.setPower(.5);
+                robot.launchingMotor.setPower(1.0);
             }
+        }
+        if (msAfterLaunch.time() > 750) {
+            robot.launchingMotor.setPower(0.5);
         }
 
         loaderPower = gamepad2.right_stick_y;
