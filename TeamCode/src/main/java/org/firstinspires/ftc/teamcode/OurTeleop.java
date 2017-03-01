@@ -65,7 +65,7 @@ public class OurTeleop extends OpMode {
     */
     int                     counter               = 0;
     boolean                 FINDLINE              = false;
-    double                  maxODS                = 0;
+    double                  ODSvalue                = 0;
 
     double leftFrontPower;
     double leftBackPower;
@@ -78,7 +78,6 @@ public class OurTeleop extends OpMode {
 
     Boolean launchAfterLoad = false;
     Boolean stillLoading = false;
-
 
     // Code to run once when the driver hits INIT
     @Override
@@ -103,13 +102,9 @@ public class OurTeleop extends OpMode {
     public void loop() {
         // Send telemetry message to signify robot running
         telemetry.addData("Say", "Running");
-        telemetry.addData("ods", maxODS);
-
-        if (gamepad2.y){
-            maxODS = 0;
-        }
-
-      /*  // START OF SIDE DRIVE
+        telemetry.addData("ods", ODSvalue);
+      
+        /* // START OF SIDE DRIVE
         double SideDriveL = gamepad1.left_trigger;
         double SideDriveR = gamepad1.right_trigger;
         if (SideDriveL > 0.1) {
@@ -215,12 +210,12 @@ public class OurTeleop extends OpMode {
             DriveSideways(-gamepad2.left_stick_y);
         }
         else if (gamepad2.dpad_right){
-            robot.rightMotorF.setPower(.5);
-            robot.rightMotorB.setPower(.5);
+            robot.rightMotorF.setPower(.75);
+            robot.rightMotorB.setPower(.75);
         }
         else if (gamepad2.dpad_left){
-            robot.rightMotorF.setPower(-.5);
-            robot.rightMotorB.setPower(-.5);
+            robot.rightMotorF.setPower(-.75);
+            robot.rightMotorB.setPower(-.75);
         }
         //END OF HUG
 
@@ -327,14 +322,12 @@ public class OurTeleop extends OpMode {
     {
         power = Range.clip(power, -.9, .9);
         if (gamepad2.a) {
-            double ODS = ods.getLightDetected();
-            if (ODS > maxODS){
-                maxODS = ODS;
-            }
-            if (ODS > .5) {
+            ODSvalue = ods.getRawLightDetected();
+
+            if (ODSvalue > .35) {
                 FINDLINE = true;
                 if (power > 0) {
-                    int position = 3*90 ;
+                    int position = 2*90 ;
                     robot.leftMotorF.setMode(STOP_AND_RESET_ENCODER);
                     robot.leftMotorB.setMode(STOP_AND_RESET_ENCODER);
                     robot.rightMotorF.setMode(STOP_AND_RESET_ENCODER);
@@ -415,6 +408,4 @@ public class OurTeleop extends OpMode {
         }
 
     }
-
-
 }

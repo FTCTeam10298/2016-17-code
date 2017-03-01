@@ -234,7 +234,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 } else if (endposition == EndPosition.ENDCENTER && beacon == 2) {
                     DriveSidewaysTime(1000, -.5);
                     DriveTurngyro(0.5, -13.0);
-                    DriveRobotPosition(.6, 52, FIND_LINE_FALSE);
+                    DriveRobotPosition(.6, 55, FIND_LINE_FALSE);
                 } else if (endposition == EndPosition.ENDCENTER && beacon == 1) {
                     DriveSidewaysTime(2000, -.5);
                     DriveTurngyro(0.5, 0.0);
