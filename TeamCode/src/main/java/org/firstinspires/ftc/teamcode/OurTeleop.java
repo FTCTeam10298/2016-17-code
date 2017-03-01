@@ -101,8 +101,10 @@ public class OurTeleop extends OpMode {
     @Override
     public void loop() {
         // Send telemetry message to signify robot running
-        telemetry.addData("Say", "Running");
-        telemetry.addData("ods", ODSvalue);
+        if (gamepad1.x) {
+            telemetry.addData("Say", "Running");
+            telemetry.addData("ods", ODSvalue);
+        }
       
         /* // START OF SIDE DRIVE
         double SideDriveL = gamepad1.left_trigger;
@@ -135,7 +137,7 @@ public class OurTeleop extends OpMode {
         */
 
         /*
-        //START OF DPAD DRIVE
+        // START OF DPAD DRIVE
 
         if (gamepad1.dpad_right) {
             robot.leftMotorF.setPower(-1);
@@ -178,7 +180,7 @@ public class OurTeleop extends OpMode {
                 robot.rightMotorB.setPower(-1);
             }
         }
-        //END OF DPAD DRIVE
+        // END OF DPAD DRIVE
         */
 
         /*
@@ -196,7 +198,7 @@ public class OurTeleop extends OpMode {
         }
         */
 
-        //START OF HUG
+        // START OF HUG
         /* else */ if (gamepad2.left_stick_x > .1){
             DriveRobothug(-gamepad2.left_stick_x);
         }
@@ -217,7 +219,7 @@ public class OurTeleop extends OpMode {
             robot.rightMotorF.setPower(-.75);
             robot.rightMotorB.setPower(-.75);
         }
-        //END OF HUG
+        // END OF HUG
 
         // Enhanced tank drive
         else {
@@ -406,6 +408,5 @@ public class OurTeleop extends OpMode {
             robot.leftMotorB.setPower(power);
             robot.leftMotorF.setPower(-power);
         }
-
     }
 }
