@@ -334,12 +334,14 @@ public class OurTeleop extends OpMode {
     {
         power = Range.clip(power, -.9, .9);
         if (gamepad2.a) {
+            // Go until line
             ODSvalue = ods.getRawLightDetected();
 
+            // Overshoot correction
             if (ODSvalue > .35) {
                 FINDLINE = true;
                 if (power > 0) {
-                    int position = 2*90 ;
+                    int position = 2*90; // 2 inches
                     robot.leftMotorF.setMode(STOP_AND_RESET_ENCODER);
                     robot.leftMotorB.setMode(STOP_AND_RESET_ENCODER);
                     robot.rightMotorF.setMode(STOP_AND_RESET_ENCODER);
@@ -357,7 +359,7 @@ public class OurTeleop extends OpMode {
                     robot.rightMotorF.setMode(RUN_TO_POSITION);
                     robot.rightMotorB.setMode(RUN_TO_POSITION);
                 }
-            }
+            } //End overshoot correction
         }
         if (FINDLINE){
             if (power < 0) {
@@ -384,15 +386,15 @@ public class OurTeleop extends OpMode {
             FINDLINE = false;
             counter=0;
             if (power > 0) {
-                robot.leftMotorF.setPower(-power * .9);
+                robot.leftMotorF.setPower(-power * .8);
                 robot.rightMotorF.setPower(-power);
-                robot.rightMotorB.setPower(-power * .9);
+                robot.rightMotorB.setPower(-power * .8);
                 robot.leftMotorB.setPower(-power);
             } else {
                 robot.leftMotorF.setPower(-power);
-                robot.rightMotorF.setPower(-power * .9);
+                robot.rightMotorF.setPower(-power * .8);
                 robot.rightMotorB.setPower(-power);
-                robot.leftMotorB.setPower(-power * .9);
+                robot.leftMotorB.setPower(-power * .8);
 
             }
         }
