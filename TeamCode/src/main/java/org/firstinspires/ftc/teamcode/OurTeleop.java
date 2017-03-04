@@ -69,15 +69,6 @@ public class OurTeleop extends OpMode {
     boolean                 FINDLINE              = false;
     double                  ODSvalue                = 0;
 
-    double leftFrontPower;
-    double leftBackPower;
-    double rightBackPower;
-    double rightFrontPower;
-
-    double loaderPower;
-    double launchPower;
-    double servoPosition;
-
     Boolean launchAfterLoad = false;
     Boolean stillLoading = false;
 
@@ -104,6 +95,19 @@ public class OurTeleop extends OpMode {
      */
     @Override
     public void loop() {
+
+        double leftFrontPower;
+        double leftBackPower;
+        double rightBackPower;
+        double rightFrontPower;
+
+        double TurnLeft;
+        double TurnRight;
+
+        double loaderPower;
+        double launchPower;
+        double servoPosition;
+
         // Send telemetry message to signify robot running
         if (gamepad1.x) {
             telemetry.addData("Say", "Running");
@@ -140,9 +144,7 @@ public class OurTeleop extends OpMode {
         }
         */
 
-        /*
         // START OF DPAD DRIVE
-
         if (gamepad1.dpad_right) {
             robot.leftMotorF.setPower(-1);
             robot.leftMotorB.setPower(1);
@@ -185,7 +187,6 @@ public class OurTeleop extends OpMode {
             }
         }
         // END OF DPAD DRIVE
-        */
 
         /*
         else if (gamepad1.right_bumper) {
@@ -203,7 +204,7 @@ public class OurTeleop extends OpMode {
         */
 
         // START OF HUG
-        /* else */ if (gamepad2.left_stick_x > .1){
+        else if (gamepad2.left_stick_x > .1){
             DriveRobothug(-gamepad2.left_stick_x);
         }
         else if (gamepad2.left_stick_x < -.1){
@@ -229,9 +230,9 @@ public class OurTeleop extends OpMode {
         else {
             FINDLINE = false;
             leftFrontPower = Range.clip(gamepad1.left_stick_y + (-1 * gamepad1.left_stick_x), -1.0, 1.0);
-            leftBackPower = Range.clip(gamepad1.left_stick_y + gamepad1.left_stick_x, -1.0, 1.0);
-            rightFrontPower = Range.clip(gamepad1.right_stick_y + (-1 * gamepad1.left_stick_x), -1.0, 1.0);
-            rightBackPower = Range.clip(gamepad1.right_stick_y + gamepad1.left_stick_x, -1.0, 1.0);
+            leftBackPower = Range.clip(gamepad1.left_stick_y + (1 * gamepad1.left_stick_x), -1.0, 1.0);
+            rightFrontPower = Range.clip(gamepad1.right_stick_y + (1 * gamepad1.right_stick_x), -1.0, 1.0);
+            rightBackPower = Range.clip(gamepad1.right_stick_y + (-1 * gamepad1.right_stick_x), -1.0, 1.0);
 
             robot.leftMotorF.setPower(leftFrontPower);
             robot.leftMotorB.setPower(leftBackPower);
@@ -240,23 +241,18 @@ public class OurTeleop extends OpMode {
         }
 
         // Launching arm and loading mechanism code
-        launchPower = (gamepad2.right_trigger);
-        if (launchPower > 0.1) {
-            robot.launchingMotor.setMode(RUN_USING_ENCODER);
-            robot.launchingMotor.setPower(launchPower);
-        } else if (robot.launchingMotor.getMode() == RUN_USING_ENCODER) {
-            robot.launchingMotor.setPower(0.0);
-        }
         if (gamepad2.right_bumper) {
             launchAfterLoad = true;
             stillLoading = true;
             robot.loaderMotor.setPower(1);
+            robot.launchingMotor.setPower(0);
         }
-        if (!gamepad2.right_bumper) {
+        else {
             stillLoading = false;
-            robot.loaderMotor.setPower(0);
+            robot.launchingMotor.setPower(0);
         }
         if (launchAfterLoad && !stillLoading) {
+            launchAfterLoad = false;
             msAfterLaunch.reset();
             if (robot.launchingMotor.getMode() == RUN_TO_POSITION) {
                 int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
@@ -270,22 +266,29 @@ public class OurTeleop extends OpMode {
                 robot.launchingMotor.setPower(1.0);
             }
         }
+        launchPower = (gamepad2.right_trigger);
+        if (launchPower > 0.1) {
+            robot.launchingMotor.setMode(RUN_USING_ENCODER);
+            robot.launchingMotor.setPower(launchPower);
+        } else if (robot.launchingMotor.getMode() == RUN_USING_ENCODER) {
+            robot.launchingMotor.setPower(0.0);
+        }
         if (msAfterLaunch.time() > 750) {
             robot.launchingMotor.setPower(0.5);
         }
 
         loaderPower = gamepad2.right_stick_y;
         if (loaderPower > 0.15) {
-            loaderPower = loaderPower * loaderPower;
+            // loaderPower = loaderPower * loaderPower;
             robot.loaderMotor.setPower(loaderPower);
         } else if (loaderPower < -0.15) {
-            loaderPower = -loaderPower * loaderPower;
+            // loaderPower = -loaderPower * loaderPower;
             robot.loaderMotor.setPower(loaderPower);
         } else {
             robot.loaderMotor.setPower(0.0);
         }
 
-        //START OF GAMEPAD 2 MANUAL OVERRIDE
+        /* //START OF GAMEPAD 2 MANUAL OVERRIDE
         if (gamepad2.left_stick_y > .1){
             DriveSideways(.5);
         }
@@ -297,7 +300,7 @@ public class OurTeleop extends OpMode {
         }
         else if (gamepad2.left_stick_x < 1){
             DrivePowerAll(-.5);
-        }
+        } */
 
         //START OF SERVO BEACON PUSHER
         if (!FINDLINE) {
