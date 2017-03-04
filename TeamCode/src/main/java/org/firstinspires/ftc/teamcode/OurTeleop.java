@@ -249,7 +249,6 @@ public class OurTeleop extends OpMode {
         }
         else {
             stillLoading = false;
-            robot.launchingMotor.setPower(0);
         }
         if (launchAfterLoad && !stillLoading) {
             launchAfterLoad = false;
