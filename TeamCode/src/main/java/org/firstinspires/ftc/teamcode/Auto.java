@@ -171,9 +171,9 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         if (startposition == StartPosition.STARTPOSITION1) {
             if (DoTask("Setup Ball Launch", runmode)) {
                 if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1)
-                    DriveRobotPosition(.25, 30, FIND_LINE_FALSE);//really should be (-.25, 34, 0)
+                    DriveRobotPosition(.65, 30, FIND_LINE_FALSE);//really should be (-.25, 34, 0)
                 else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1)
-                    DriveRobotPosition(-.25, -25, FIND_LINE_FALSE);//really should be (-.25, -34, 0)
+                    DriveRobotPosition(-.65, -25, FIND_LINE_FALSE);//really should be (-.25, -34, 0)
             }
             if (DoTask("Ball Launch", runmode))
                 BallLaunch(balls);
@@ -183,15 +183,15 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 if (beacon > 0) {
                     if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1) {
                         DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
-                        DriveRobotTurn(0.25, -45);
-                        DriveSidewaysTime(1000, .9);
+                        DriveRobotTurn(0.25, -50);
+                        DriveSidewaysTime(1500, .9);
                         DriveRobotPosition(-.5, -4, FIND_LINE_FALSE);
                         DriveRobothug(0.15, 20, FIND_LINE_TRUE);
                     } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
                         DriveRobotPosition(-.5, -27, FIND_LINE_FALSE);
-                        DriveRobotTurn(0.25, 45);
+                        DriveRobotTurn(0.25, 50);
                         DriveRobotPosition(-.25, -3, FIND_LINE_FALSE);
-                        DriveSidewaysTime(1000, .5);
+                        DriveSidewaysTime(1500, .5);
                         DriveRobothug(-0.15, -20, FIND_LINE_TRUE);
                     }
                 }
@@ -343,9 +343,9 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 // Load ball
                 robot.loaderMotor.setPower(1);
                 if (longBallLoad) {
-                    sleep(4000);
+                    sleep(3000);
                 } else {
-                    sleep(2000);
+                    sleep(1500);
                 }
                 robot.loaderMotor.setPower(0);
                 // End load ball

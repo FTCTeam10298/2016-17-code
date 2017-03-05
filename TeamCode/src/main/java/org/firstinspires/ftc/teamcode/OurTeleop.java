@@ -241,7 +241,7 @@ public class OurTeleop extends OpMode {
         }
 
         // Launching arm and loading mechanism code
-        if (gamepad2.right_bumper) {
+        if (gamepad2.left_bumper) {
             launchAfterLoad = true;
             stillLoading = true;
             robot.loaderMotor.setPower(1);
@@ -250,19 +250,19 @@ public class OurTeleop extends OpMode {
         else {
             stillLoading = false;
         }
-        if (launchAfterLoad && !stillLoading) {
-            launchAfterLoad = false;
+        if ((launchAfterLoad && !stillLoading)) {
             msAfterLaunch.reset();
+            launchAfterLoad = false;
             if (robot.launchingMotor.getMode() == RUN_TO_POSITION) {
                 int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
                 robot.launchingMotor.setPower(0);
                 robot.launchingMotor.setTargetPosition(oneMoreTurn);
-                robot.launchingMotor.setPower(1.0);
+                robot.launchingMotor.setPower(1);
             } else {
                 robot.launchingMotor.setMode(STOP_AND_RESET_ENCODER);
                 robot.launchingMotor.setTargetPosition(3360);
                 robot.launchingMotor.setMode(RUN_TO_POSITION);
-                robot.launchingMotor.setPower(1.0);
+                robot.launchingMotor.setPower(1);
             }
         }
         launchPower = (gamepad2.right_trigger);
@@ -272,8 +272,9 @@ public class OurTeleop extends OpMode {
         } else if (robot.launchingMotor.getMode() == RUN_USING_ENCODER) {
             robot.launchingMotor.setPower(0.0);
         }
-        if (msAfterLaunch.time() > 750) {
+        if (msAfterLaunch.time() > 750 && msAfterLaunch.time() < 1000) {
             robot.launchingMotor.setPower(0.5);
+
         }
 
         loaderPower = gamepad2.right_stick_y;
@@ -283,8 +284,22 @@ public class OurTeleop extends OpMode {
         } else if (loaderPower < -0.15) {
             // loaderPower = -loaderPower * loaderPower;
             robot.loaderMotor.setPower(loaderPower);
-        } else {
+        } else if (!stillLoading){
             robot.loaderMotor.setPower(0.0);
+        }
+        // old one shot
+        if (gamepad2.right_bumper) {
+            if (robot.launchingMotor.getMode() == RUN_TO_POSITION && !robot.launchingMotor.isBusy()) {
+                int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
+                robot.launchingMotor.setPower(0);
+                robot.launchingMotor.setTargetPosition(oneMoreTurn);
+                robot.launchingMotor.setPower(.5);
+            } else {
+                robot.launchingMotor.setMode(STOP_AND_RESET_ENCODER);
+                robot.launchingMotor.setTargetPosition(3360);
+                robot.launchingMotor.setMode(RUN_TO_POSITION);
+                robot.launchingMotor.setPower(.5);
+            }
         }
 
         /* //START OF GAMEPAD 2 MANUAL OVERRIDE
