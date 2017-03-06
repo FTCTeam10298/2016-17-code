@@ -188,7 +188,7 @@ public class OurTeleop extends OpMode {
         }
         // END OF DPAD DRIVE
 
-        /*
+
         else if (gamepad1.right_bumper) {
                 robot.leftMotorF.setPower (-1);
                 robot.leftMotorB.setPower (-1);
@@ -201,7 +201,7 @@ public class OurTeleop extends OpMode {
                 robot.rightMotorF.setPower (-1);
                 robot.rightMotorB.setPower (-1);
         }
-        */
+
 
         // START OF HUG
         else if (gamepad2.left_stick_x > .1){
@@ -227,7 +227,7 @@ public class OurTeleop extends OpMode {
         // END OF HUG
 
         // Enhanced tank drive
-        else {
+        /*else {
             FINDLINE = false;
             leftFrontPower = Range.clip(gamepad1.left_stick_y + (-1 * gamepad1.left_stick_x), -1.0, 1.0);
             leftBackPower = Range.clip(gamepad1.left_stick_y + (1 * gamepad1.left_stick_x), -1.0, 1.0);
@@ -239,7 +239,15 @@ public class OurTeleop extends OpMode {
             robot.rightMotorF.setPower(rightFrontPower);
             robot.rightMotorB.setPower(rightBackPower);
         }
+*/
+        //standard tank
+        else{
+            robot.rightMotorF.setPower(gamepad1.right_stick_y);
+            robot.leftMotorF.setPower(gamepad1.left_stick_y);
+            robot.leftMotorB.setPower(gamepad1.left_stick_y);
+            robot.rightMotorB.setPower(gamepad1.right_stick_y);
 
+        }
         // Launching arm and loading mechanism code
         if (gamepad2.left_bumper) {
             launchAfterLoad = true;
