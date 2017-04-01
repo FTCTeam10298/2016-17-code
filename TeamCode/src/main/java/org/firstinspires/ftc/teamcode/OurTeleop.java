@@ -67,7 +67,10 @@ public class OurTeleop extends OpMode {
     */
     int                     counter               = 0;
     boolean                 FINDLINE              = false;
-    double                  ODSvalue                = 0;
+    double                  ODSvalue               = 0;
+    double                  x                      =0;
+    double                  y                      =0;
+    double                  z                      =0;
 
     Boolean launchAfterLoad = false;
     Boolean stillLoading = false;
@@ -143,7 +146,7 @@ public class OurTeleop extends OpMode {
             // END OF TANK DRIVE
         }
         */
-
+/*
         // START OF DPAD DRIVE
         if (gamepad1.dpad_right) {
             robot.leftMotorF.setPower(-1);
@@ -241,13 +244,42 @@ public class OurTeleop extends OpMode {
         }
 */
         //standard tank
-        else{
+  /*      else{
             robot.rightMotorF.setPower(gamepad1.right_stick_y);
             robot.leftMotorF.setPower(gamepad1.left_stick_y);
             robot.leftMotorB.setPower(gamepad1.left_stick_y);
             robot.rightMotorB.setPower(gamepad1.right_stick_y);
 
         }
+
+         */
+         if (gamepad1.left_stick_y>.1 || gamepad1.left_stick_y<-.1)
+         y=-gamepad1.left_stick_y/2;
+
+         else
+         y=0;
+
+         if (gamepad1.left_stick_x>.1 || gamepad1.left_stick_x<-.1)
+         x=-gamepad1.left_stick_x/2;
+
+         else
+         x=0;
+
+         if (gamepad1.right_stick_x>.1 || gamepad1.right_stick_x<-.1)
+         z=gamepad1.right_stick_x/2;
+
+         else
+         z=0;
+
+
+            robot.rightMotorF.setPower(-Range.clip(y + x - z, -1, 1));
+            robot.leftMotorF.setPower(-Range.clip(y - x + z, -1, 1));
+            robot.leftMotorB.setPower(-Range.clip(y + x + z, -1, 1));
+            robot.rightMotorB.setPower(-Range.clip(y - x - z, -1, 1));
+
+
+
+
         // Launching arm and loading mechanism code
         if (gamepad2.left_bumper) {
             launchAfterLoad = true;
@@ -331,7 +363,8 @@ public class OurTeleop extends OpMode {
             } else {
                 servoPosition = .1;
             }
-            robot.beaconpusher.setPosition(servoPosition);
+            robot.beaconpusherR.setPosition(servoPosition);
+            robot.beaconpusherL.setPosition(1-servoPosition);
         }
     }
 
@@ -387,10 +420,12 @@ public class OurTeleop extends OpMode {
         if (FINDLINE){
             if (power < 0) {
                 DrivePowerAll(0);
-                robot.beaconpusher.setPosition(.5);
+                robot.beaconpusherR.setPosition(.5);
+                robot.beaconpusherL.setPosition(.5);
             }
             else if (!robot.leftMotorF.isBusy() || !robot.leftMotorB.isBusy() || !robot.rightMotorF.isBusy() || !robot.rightMotorB.isBusy()) {
-                robot.beaconpusher.setPosition(.5);
+                robot.beaconpusherR.setPosition(.5);
+                robot.beaconpusherL.setPosition(.5);
                 DrivePowerAll(0);
 
                 robot.leftMotorF.setMode(RUN_USING_ENCODER);

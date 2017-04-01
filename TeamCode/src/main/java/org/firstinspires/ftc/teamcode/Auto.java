@@ -138,7 +138,8 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         ods.enableLed(true);
 
         // Initialize beacon pusher ----------------------------------------------------------------
-        robot.beaconpusher.setPosition(0.1);
+        robot.beaconpusherR.setPosition(0.1);
+        robot.beaconpusherL.setPosition(0.9);
 
         robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.launchingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -176,6 +177,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                     DriveRobotPosition(-.65, -25, FIND_LINE_FALSE);//really should be (-.25, -34, 0)
             }
             if (DoTask("Ball Launch", runmode))
+                sleep(250);
                 BallLaunch(balls);
 
             // go to beacon
@@ -262,16 +264,31 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         } else if (startposition == StartPosition.STARTPOSITION2) {
             if (DoTask("Setup Ball Launch", runmode)) {
                 longBallLoad = true;
-                DriveRobotPosition(.5, 20, FIND_LINE_FALSE);
+                DriveRobotPosition(.5, 24, FIND_LINE_FALSE);
                 DriveTurngyro(0.1, -90.0);
             }
             if (DoTask("Ball Launch", runmode))
                 BallLaunch(balls);
-            if (DoTask("Go to Beacon 1", runmode)) {
+            /*if (DoTask("Go to Beacon 1", runmode)) {
                 DriveTurngyro(0.1, 0.0);
                 DriveRobotPosition(1, 35, FIND_LINE_FALSE);
                 sleep(500);
                 //DriveRobotPosition(.5, 65, FIND_LINE_FALSE);
+            }*/
+            if (alliance == Alliance.ALLIANCE_BLUE && endposition == EndPosition.ENDCORNER){
+                DriveTurngyro(0.1, -50.0);
+                DriveRobotPosition(.75, 70, FIND_LINE_FALSE);
+                sleep(500);
+            }
+            else if (alliance == Alliance.ALLIANCE_RED && endposition == EndPosition.ENDCORNER){
+                DriveTurngyro(0.1, -130.0);
+                DriveRobotPosition(.75, -70, FIND_LINE_FALSE);
+                sleep(500);
+            }
+            else if (endposition == EndPosition.ENDCENTER){
+                DriveTurngyro(0.1, 0.0);
+                DriveRobotPosition(1, 35, FIND_LINE_FALSE);
+                sleep(500);
             }
         }
 
@@ -315,17 +332,18 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         dashboard.displayPrintf(4,"Red   %d", valuered);
         dashboard.displayPrintf(5,"Green %d", color.green());
         dashboard.displayPrintf(6,"Blue  %d", valueblue);
-        dashboard.displayPrintf(7,"Pusher  %f", robot.beaconpusher.getPosition());
+        dashboard.displayPrintf(7,"PusherR  %f", robot.beaconpusherR.getPosition());
+        dashboard.displayPrintf(7,"PusherL  %f", robot.beaconpusherL.getPosition());
         if (alliance == Alliance.ALLIANCE_BLUE && valueblue < valuered) {
-            DriveRobotPosition(0.15, -7, FIND_LINE_FALSE);
+            DriveRobotPosition(0.15, -6, FIND_LINE_FALSE);
             runLonger = true;
         }
         else if (alliance == Alliance.ALLIANCE_RED && valuered < valueblue) {
             DriveRobotPosition(-0.15, -5, FIND_LINE_FALSE);
         }
-        robot.beaconpusher.setPosition(.5);
+        robot.beaconpusherR.setPosition(.5);
         sleep(500);
-        robot.beaconpusher.setPosition(0.1);
+        robot.beaconpusherR.setPosition(0.1);
         if (beaconNumber == 2) {
             if (alliance == Alliance.ALLIANCE_BLUE && valueblue < valuered) {
                 DriveRobotPosition(0.5, 7, FIND_LINE_FALSE);
