@@ -106,6 +106,10 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
     boolean                 longBallLoad              = false;
     boolean                 ballLoaded                = true;
 
+    // This is the gear ratio constant
+
+    double                  gearRatio                 = -1.5;
+
     @Override
     public void runOpMode() {
 
@@ -398,7 +402,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
     // RobotDrivePosition (works best with .25 power)
     void DriveRobotPosition(double power, int inches, boolean findline)
     {
-        int position = -inches*90 ;
+        double position = -inches*90*gearRatio;
         int counter = 0;
         double odsvalue = 0.0;
         boolean notFound = true;
@@ -410,10 +414,10 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
         DrivePowerAll(-power);
 
-        robot.leftMotorF.setTargetPosition(position);
-        robot.rightMotorF.setTargetPosition(position);
-        robot.rightMotorB.setTargetPosition(position);
-        robot.leftMotorB.setTargetPosition(position);
+        robot.leftMotorF.setTargetPosition((int)position);
+        robot.rightMotorF.setTargetPosition((int)position);
+        robot.rightMotorB.setTargetPosition((int)position);
+        robot.leftMotorB.setTargetPosition((int)position);
 
         robot.leftMotorF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightMotorF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -451,7 +455,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
      */
     void DriveRobothug (double power, int inches, boolean findline)
     {
-        int position = -inches*90 ;
+        double position = -inches*90*gearRatio;
         int counter = 0;
         double odsvalue = 0.0;
         boolean notFound = true;
@@ -475,10 +479,10 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             robot.leftMotorB.setPower(-power*.9);
         }
 
-        robot.leftMotorF.setTargetPosition(position);
-        robot.rightMotorF.setTargetPosition(position);
-        robot.rightMotorB.setTargetPosition(position);
-        robot.leftMotorB.setTargetPosition(position);
+        robot.leftMotorF.setTargetPosition((int)position);
+        robot.rightMotorF.setTargetPosition((int)position);
+        robot.rightMotorB.setTargetPosition((int)position);
+        robot.leftMotorB.setTargetPosition((int)position);
 
         robot.leftMotorF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightMotorF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -508,7 +512,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
 
     void DriveRobotTurn (double power, int degree)
     {
-        int position = degree*19;
+        double position = degree*19*gearRatio;
 
         robot.leftMotorF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.rightMotorF.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -520,10 +524,10 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         robot.rightMotorB.setPower(power);
         robot.leftMotorB.setPower(-power);
 
-        robot.leftMotorF.setTargetPosition(-position);
-        robot.rightMotorF.setTargetPosition(position);
-        robot.rightMotorB.setTargetPosition(position);
-        robot.leftMotorB.setTargetPosition(-position);
+        robot.leftMotorF.setTargetPosition(-(int)position);
+        robot.rightMotorF.setTargetPosition((int)position);
+        robot.rightMotorB.setTargetPosition((int)position);
+        robot.leftMotorB.setTargetPosition(-(int)position);
 
         robot.leftMotorF.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.rightMotorF.setMode(DcMotor.RunMode.RUN_TO_POSITION);

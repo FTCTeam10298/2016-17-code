@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.util.Range;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
+import static java.lang.Math.abs;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -254,28 +255,34 @@ public class OurTeleop extends OpMode {
 
          */
          if (gamepad1.left_stick_y>.1 || gamepad1.left_stick_y<-.1)
-         y=-gamepad1.left_stick_y/2;
-
+            y=gamepad1.left_stick_y;
          else
-         y=0;
+             y=0;
 
          if (gamepad1.left_stick_x>.1 || gamepad1.left_stick_x<-.1)
-         x=-gamepad1.left_stick_x/2;
-
+             x=gamepad1.left_stick_x;
          else
-         x=0;
+             x=0;
 
          if (gamepad1.right_stick_x>.1 || gamepad1.right_stick_x<-.1)
-         z=gamepad1.right_stick_x/2;
-
+             z=-gamepad1.right_stick_x;
          else
-         z=0;
+             z=0;
+        double maxvalue = abs(y+x-z);
+        if (abs(y+x-z) > maxvalue)
+            maxvalue = abs(y+x-z);
+        if (abs(y-x+z) > maxvalue)
+            maxvalue = abs(y-x+z);
+        if (abs(y+x+z) > maxvalue)
+            maxvalue = abs(y+x+z);
+        if (abs(y-x-z) > maxvalue)
+            maxvalue = abs(y-x-z);
 
 
-            robot.rightMotorF.setPower(-Range.clip(y + x - z, -1, 1));
-            robot.leftMotorF.setPower(-Range.clip(y - x + z, -1, 1));
-            robot.leftMotorB.setPower(-Range.clip(y + x + z, -1, 1));
-            robot.rightMotorB.setPower(-Range.clip(y - x - z, -1, 1));
+            robot.rightMotorF.setPower(-Range.clip((y + x - z)/maxvalue, -1, 1));
+            robot.leftMotorF.setPower(-Range.clip((y - x + z)/maxvalue, -1, 1));
+            robot.leftMotorB.setPower(-Range.clip((y + x + z)/maxvalue, -1, 1));
+            robot.rightMotorB.setPower(-Range.clip((y - x - z)/maxvalue, -1, 1));
 
 
 

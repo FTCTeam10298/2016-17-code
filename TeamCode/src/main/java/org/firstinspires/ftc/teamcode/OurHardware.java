@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -46,11 +47,11 @@ public class OurHardware
         loaderMotor     = hwMap.dcMotor.get("arm_motor");
 
         // Set direction for all motors
-        leftMotorF.setDirection(DcMotor.Direction.REVERSE);
-        leftMotorB.setDirection(DcMotor.Direction.REVERSE);
-        rightMotorF.setDirection(DcMotor.Direction.FORWARD);
-        rightMotorB.setDirection(DcMotor.Direction.FORWARD);
-        launchingMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftMotorF.setDirection(DcMotor.Direction.FORWARD);
+        leftMotorB.setDirection(DcMotor.Direction.FORWARD);
+        rightMotorF.setDirection(DcMotor.Direction.REVERSE);
+        rightMotorB.setDirection(DcMotor.Direction.REVERSE);
+        launchingMotor.setDirection(DcMotor.Direction.REVERSE);
         loaderMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
