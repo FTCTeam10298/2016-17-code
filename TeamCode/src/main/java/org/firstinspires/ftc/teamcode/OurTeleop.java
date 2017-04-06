@@ -89,6 +89,7 @@ public class OurTeleop extends OpMode {
         // Initialize optical distance sensor ------------------------------------------------------
         ods = (ModernRoboticsAnalogOpticalDistanceSensor) hardwareMap.opticalDistanceSensor.get("ods");
         ods.enableLed(true);
+        robot.dagate.setPosition(.65);
 
         // Send telemetry message to signify robot waiting
         telemetry.addData("Say", "Robot ready");
@@ -253,39 +254,46 @@ public class OurTeleop extends OpMode {
 
         }
 
-         */
-         if (gamepad1.left_stick_y>.1 || gamepad1.left_stick_y<-.1)
-            y=gamepad1.left_stick_y;
-         else
-             y=0;
+        */
+        if (gamepad1.left_stick_y > .1 || gamepad1.left_stick_y < -.1) {
+           y = gamepad1.left_stick_y;
+        } else {
+            y = 0;
+        }
 
-         if (gamepad1.left_stick_x>.1 || gamepad1.left_stick_x<-.1)
-             x=gamepad1.left_stick_x;
-         else
-             x=0;
+        if (gamepad1.left_stick_x > .1 || gamepad1.left_stick_x < -.1) {
+            x = gamepad1.left_stick_x;
+        } else {
+            x = 0;
+        }
 
-         if (gamepad1.right_stick_x>.1 || gamepad1.right_stick_x<-.1)
-             z=-gamepad1.right_stick_x;
-         else
-             z=0;
-        double maxvalue = abs(y+x-z);
-        if (abs(y+x-z) > maxvalue)
-            maxvalue = abs(y+x-z);
-        if (abs(y-x+z) > maxvalue)
-            maxvalue = abs(y-x+z);
-        if (abs(y+x+z) > maxvalue)
-            maxvalue = abs(y+x+z);
-        if (abs(y-x-z) > maxvalue)
-            maxvalue = abs(y-x-z);
+        if (gamepad1.right_stick_x > .1 || gamepad1.right_stick_x < -.1) {
+            z = -gamepad1.right_stick_x;
+        } else {
+            z = 0;
+        }
 
+        double maxvalue = abs(y + x - z);
+        if (abs(y + x - z) > maxvalue) {
+            maxvalue = abs(y + x - z);
+        }
+        if (abs(y - x + z) > maxvalue) {
+            maxvalue = abs(y - x + z);
+        }
+        if (abs(y + x + z) > maxvalue) {
+            maxvalue = abs(y + x + z);
+        }
+        if (abs(y - x - z) > maxvalue) {
+            maxvalue = abs(y - x - z);
+        }
+        if (maxvalue == 0) {
+            maxvalue = 1;
+        }
 
-            robot.rightMotorF.setPower(-Range.clip((y + x - z)/maxvalue, -1, 1));
-            robot.leftMotorF.setPower(-Range.clip((y - x + z)/maxvalue, -1, 1));
-            robot.leftMotorB.setPower(-Range.clip((y + x + z)/maxvalue, -1, 1));
-            robot.rightMotorB.setPower(-Range.clip((y - x - z)/maxvalue, -1, 1));
-
-
-
+        robot.rightMotorF.setPower(-1 * Range.clip(((y + x - z) / maxvalue), -1.0, 1.0));
+        robot.leftMotorF.setPower(-1 * Range.clip(((y - x + z) / maxvalue), -1.0, 1.0));
+        robot.leftMotorB.setPower(-1 * Range.clip(((y + x + z) / maxvalue), -1.0, 1.0));
+        robot.rightMotorB.setPower(-1 * Range.clip(((y - x - z) / maxvalue), -1.0, 1.0));
 
         // Launching arm and loading mechanism code
         if (gamepad2.left_bumper) {
@@ -332,7 +340,7 @@ public class OurTeleop extends OpMode {
             // loaderPower = -loaderPower * loaderPower;
             robot.loaderMotor.setPower(loaderPower);
         } else if (!stillLoading){
-            robot.loaderMotor.setPower(0.0);
+            robot.loaderMotor.setPower(0);
         }
         // old one shot
         if (gamepad2.right_bumper) {
@@ -373,6 +381,11 @@ public class OurTeleop extends OpMode {
             robot.beaconpusherR.setPosition(servoPosition);
             robot.beaconpusherL.setPosition(1-servoPosition);
         }
+        //START OF GATE
+        if (gamepad2.b)
+            robot.dagate.setPosition(.15);
+        else
+            robot.dagate.setPosition(.65);
     }
 
     @Override
@@ -380,7 +393,7 @@ public class OurTeleop extends OpMode {
         // Code here runs ONCE after the driver hits stop
 
         // Stop launcher if launch in progress
-        robot.launchingMotor.setPower(0.0);
+        robot.launchingMotor.setPower(0);
     }
 
     /*

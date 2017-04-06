@@ -19,10 +19,11 @@ public class OurHardware
     public DcMotor  rightMotorF     = null;
     public DcMotor  rightMotorB     = null;
     public DcMotor  launchingMotor  = null;
-    public DcMotor loaderMotor      = null;
+    public DcMotor  loaderMotor     = null;
 
     public Servo    beaconpusherR    = null;
     public Servo    beaconpusherL    = null;
+    public Servo    dagate           = null;
 
     /* local OpMode members. */
     HardwareMap hwMap               = null;
@@ -75,6 +76,7 @@ public class OurHardware
         // Define and initialize all installed servos.
         beaconpusherR = hwMap.servo.get("right_beacon");
         beaconpusherL = hwMap.servo.get("left_beacon");
+        dagate = hwMap.servo.get("gate_beacon");
         beaconpusherR.setPosition(0.1);
         beaconpusherL.setPosition(0.9);
     }
