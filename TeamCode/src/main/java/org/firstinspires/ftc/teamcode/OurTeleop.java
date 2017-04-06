@@ -341,10 +341,6 @@ public class OurTeleop extends OpMode {
         } else if (robot.launchingMotor.getMode() == RUN_USING_ENCODER) {
             robot.launchingMotor.setPower(0.0);
         }
-        if (msAfterLaunch.time() > 750 && msAfterLaunch.time() < 1000) {
-            robot.launchingMotor.setPower(0.5);
-
-        }
 
         loaderPower = gamepad2.right_stick_y;
         if (loaderPower > 0.15) {
@@ -353,7 +349,7 @@ public class OurTeleop extends OpMode {
         } else if (loaderPower < -0.15) {
             // loaderPower = -loaderPower * loaderPower;
             robot.loaderMotor.setPower(-loaderPower);
-        } else if (!stillLoading){
+        } else if (!stillLoading && !launchInProgress){
             robot.loaderMotor.setPower(0);
         }
         // old one shot
@@ -373,17 +369,28 @@ public class OurTeleop extends OpMode {
 
         if (gamepad2.right_bumper && !launchInProgress) {
             launchInProgress = true;
+            robot.loaderMotor.setPower(1.0);
             if (robot.launchingMotor.getMode() == RUN_TO_POSITION && !robot.launchingMotor.isBusy()) {
                 int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
                 robot.launchingMotor.setPower(0);
                 robot.launchingMotor.setTargetPosition(oneMoreTurn);
-                robot.launchingMotor.setPower(.5);
             } else {
                 robot.launchingMotor.setMode(STOP_AND_RESET_ENCODER);
                 robot.launchingMotor.setTargetPosition(3360);
                 robot.launchingMotor.setMode(RUN_TO_POSITION);
-                robot.launchingMotor.setPower(.5);
             }
+            msAfterLaunch.reset();
+            robot.launchingMotor.setPower(1.0);
+            robot.dagate.setPosition(.05);
+        }
+        if (msAfterLaunch.time() > 500 && msAfterLaunch.time() < 750) {
+            robot.dagate.setPosition(.65);
+        }
+        if (msAfterLaunch.time() > 750 && msAfterLaunch.time() < 1000 && launchInProgress) {
+            robot.launchingMotor.setPower(0.5);
+        }
+        if (msAfterLaunch.time() > 1000 && launchInProgress) {
+            launchInProgress = false;
         }
         /* //START OF GAMEPAD 2 MANUAL OVERRIDE
         if (gamepad2.left_stick_y > .1){
@@ -410,10 +417,11 @@ public class OurTeleop extends OpMode {
             robot.beaconpusherL.setPosition(1-servoPosition);
         }
         //START OF GATE
-        if (gamepad2.left_bumper)
+        if (gamepad2.left_bumper) {
             robot.dagate.setPosition(.05);
-        else
+        } else {
             robot.dagate.setPosition(.65);
+        }
     }
 
     @Override
