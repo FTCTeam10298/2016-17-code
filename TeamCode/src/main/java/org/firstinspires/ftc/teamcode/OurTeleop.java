@@ -152,83 +152,83 @@ public class OurTeleop extends OpMode {
 
         // START OF DPAD DRIVE
         if (gamepad1.dpad_right) {
-            robot.leftMotorF.setPower(-1);
-            robot.leftMotorB.setPower(1);
-            robot.rightMotorF.setPower(1);
-            robot.rightMotorB.setPower(-1);
-        }
-        else if (gamepad1.dpad_left) {
             robot.leftMotorF.setPower(1);
             robot.leftMotorB.setPower(-1);
             robot.rightMotorF.setPower(-1);
             robot.rightMotorB.setPower(1);
         }
-        else if (gamepad1.dpad_down) {
-            robot.leftMotorF.setPower(1);
+        else if (gamepad1.dpad_left) {
+            robot.leftMotorF.setPower(-1);
             robot.leftMotorB.setPower(1);
             robot.rightMotorF.setPower(1);
-            robot.rightMotorB.setPower(1);
+            robot.rightMotorB.setPower(-1);
+        }
+        else if (gamepad1.dpad_down) {
+            robot.leftMotorF.setPower(-1);
+            robot.leftMotorB.setPower(-1);
+            robot.rightMotorF.setPower(-1);
+            robot.rightMotorB.setPower(-1);
         }
         else if (gamepad1.dpad_up) {
             TurnRight = gamepad1.right_trigger;
             TurnLeft = gamepad1.left_trigger;
 
             if (gamepad1.right_trigger > 0.1) {
-                robot.leftMotorF.setPower(-1);
-                robot.leftMotorB.setPower(-1);
-                robot.rightMotorF.setPower(-1 + TurnRight);
-                robot.rightMotorB.setPower(-1 + TurnRight);
+                robot.leftMotorF.setPower(1);
+                robot.leftMotorB.setPower(1);
+                robot.rightMotorF.setPower(1 - TurnRight);
+                robot.rightMotorB.setPower(1 - TurnRight);
             }
             else if (gamepad1.left_trigger > 0.1) {
-                robot.leftMotorF.setPower(-1 + TurnLeft);
-                robot.leftMotorB.setPower(-1 + TurnLeft);
-                robot.rightMotorF.setPower(-1);
-                robot.rightMotorB.setPower(-1);
+                robot.leftMotorF.setPower(1 - TurnLeft);
+                robot.leftMotorB.setPower(1 - TurnLeft);
+                robot.rightMotorF.setPower(1);
+                robot.rightMotorB.setPower(1);
             }
             else {
-                robot.leftMotorF.setPower(-1);
-                robot.leftMotorB.setPower(-1);
-                robot.rightMotorF.setPower(-1);
-                robot.rightMotorB.setPower(-1);
+                robot.leftMotorF.setPower(1);
+                robot.leftMotorB.setPower(1);
+                robot.rightMotorF.setPower(1);
+                robot.rightMotorB.setPower(1);
             }
         }
         // END OF DPAD DRIVE
 
 
         else if (gamepad1.right_bumper) {
-                robot.leftMotorF.setPower (-1);
-                robot.leftMotorB.setPower (-1);
-                robot.rightMotorF.setPower (1);
-                robot.rightMotorB.setPower (1);
-        }
-        else if (gamepad1.left_bumper) {
                 robot.leftMotorF.setPower (1);
                 robot.leftMotorB.setPower (1);
                 robot.rightMotorF.setPower (-1);
                 robot.rightMotorB.setPower (-1);
         }
+        else if (gamepad1.left_bumper) {
+                robot.leftMotorF.setPower (-1);
+                robot.leftMotorB.setPower (-1);
+                robot.rightMotorF.setPower (1);
+                robot.rightMotorB.setPower (1);
+        }
 
 
         // START OF HUG
         else if (gamepad2.left_stick_x > .1){
-            DriveRobothug(-gamepad2.left_stick_x);
+            DriveRobothug(gamepad2.left_stick_x);
         }
         else if (gamepad2.left_stick_x < -.1){
-            DriveRobothug(-gamepad2.left_stick_x);
+            DriveRobothug(gamepad2.left_stick_x);
         }
         else if (gamepad2.left_stick_y < -.5 ){
-            DriveSideways(-gamepad2.left_stick_y);
+            DriveSideways(gamepad2.left_stick_y);
         }
         else if (gamepad2.left_stick_y > .5 ){
-            DriveSideways(-gamepad2.left_stick_y);
+            DriveSideways(gamepad2.left_stick_y);
         }
         else if (gamepad2.dpad_right){
-            robot.rightMotorF.setPower(.75);
-            robot.rightMotorB.setPower(.75);
-        }
-        else if (gamepad2.dpad_left){
             robot.rightMotorF.setPower(-.75);
             robot.rightMotorB.setPower(-.75);
+        }
+        else if (gamepad2.dpad_left){
+            robot.rightMotorF.setPower(.75);
+            robot.rightMotorB.setPower(.75);
         }
         // END OF HUG
 
@@ -247,12 +247,11 @@ public class OurTeleop extends OpMode {
         }
 */
         //standard tank
-        else{
-            robot.rightMotorF.setPower(gamepad1.right_stick_y);
-            robot.leftMotorF.setPower(gamepad1.left_stick_y);
-            robot.leftMotorB.setPower(gamepad1.left_stick_y);
-            robot.rightMotorB.setPower(gamepad1.right_stick_y);
-
+        else {
+            robot.rightMotorF.setPower(-gamepad1.right_stick_y);
+            robot.leftMotorF.setPower(-gamepad1.left_stick_y);
+            robot.leftMotorB.setPower(-gamepad1.left_stick_y);
+            robot.rightMotorB.setPower(-gamepad1.right_stick_y);
         }
 
         /*
