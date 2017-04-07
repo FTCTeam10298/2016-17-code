@@ -369,10 +369,10 @@ public class OurTeleop extends OpMode {
 
         if (gamepad2.right_bumper && !launchInProgress) {
             launchInProgress = true;
-            robot.loaderMotor.setPower(1.0);
-            if (robot.launchingMotor.getMode() == RUN_TO_POSITION && !robot.launchingMotor.isBusy()) {
+            robot.loaderMotor.setPower(-1.0);
+            if (robot.launchingMotor.getMode() == RUN_TO_POSITION/* && !robot.launchingMotor.isBusy()*/) {
                 int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
-                robot.launchingMotor.setPower(0);
+                //robot.launchingMotor.setPower(0);
                 robot.launchingMotor.setTargetPosition(oneMoreTurn);
             } else {
                 robot.launchingMotor.setMode(STOP_AND_RESET_ENCODER);
@@ -383,14 +383,16 @@ public class OurTeleop extends OpMode {
             robot.launchingMotor.setPower(1.0);
             robot.dagate.setPosition(.05);
         }
-        if (msAfterLaunch.time() > 500 && msAfterLaunch.time() < 750) {
+        if (msAfterLaunch.time() > 500 && msAfterLaunch.time() < 750 && launchInProgress) {
             robot.dagate.setPosition(.65);
         }
         if (msAfterLaunch.time() > 750 && msAfterLaunch.time() < 1000 && launchInProgress) {
             robot.launchingMotor.setPower(0.5);
         }
-        if (msAfterLaunch.time() > 1000 && launchInProgress) {
-            launchInProgress = false;
+        if (launchInProgress) {
+            if (msAfterLaunch.time() > 2000 || !robot.launchingMotor.isBusy()) {
+                launchInProgress = false;
+            }
         }
         /* //START OF GAMEPAD 2 MANUAL OVERRIDE
         if (gamepad2.left_stick_y > .1){
@@ -417,9 +419,9 @@ public class OurTeleop extends OpMode {
             robot.beaconpusherL.setPosition(1-servoPosition);
         }
         //START OF GATE
-        if (gamepad2.left_bumper) {
+        if (gamepad2.left_bumper && !launchInProgress) {
             robot.dagate.setPosition(.05);
-        } else {
+        } else if (!launchInProgress) {
             robot.dagate.setPosition(.65);
         }
     }
