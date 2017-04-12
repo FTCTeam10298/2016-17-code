@@ -41,6 +41,7 @@ import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_TO_POSITION;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 import static java.lang.Math.abs;
+import static java.lang.Math.random;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -90,7 +91,7 @@ public class OurTeleop extends OpMode {
         // Initialize optical distance sensor ------------------------------------------------------
         ods = (ModernRoboticsAnalogOpticalDistanceSensor) hardwareMap.opticalDistanceSensor.get("ods");
         ods.enableLed(true);
-        robot.dagate.setPosition(.65);
+        robot.dagate.setPosition(.85);
 
         // Send telemetry message to signify robot waiting
         telemetry.addData("Say", "Robot ready");
@@ -149,7 +150,7 @@ public class OurTeleop extends OpMode {
             // END OF TANK DRIVE
         }
         */
-
+/*
         // START OF DPAD DRIVE
         if (gamepad1.dpad_right) {
             robot.leftMotorF.setPower(1);
@@ -163,14 +164,14 @@ public class OurTeleop extends OpMode {
             robot.rightMotorF.setPower(1);
             robot.rightMotorB.setPower(-1);
         }
-        else if (gamepad1.dpad_down) {
+       */ if (gamepad1.dpad_down) {
             robot.leftMotorF.setPower(-1);
             robot.leftMotorB.setPower(-1);
             robot.rightMotorF.setPower(-1);
             robot.rightMotorB.setPower(-1);
         }
-        else if (gamepad1.dpad_up) {
-            TurnRight = gamepad1.right_trigger;
+       else if (gamepad1.dpad_up) {
+            /*TurnRight = gamepad1.right_trigger;
             TurnLeft = gamepad1.left_trigger;
 
             if (gamepad1.right_trigger > 0.1) {
@@ -185,16 +186,16 @@ public class OurTeleop extends OpMode {
                 robot.rightMotorF.setPower(1);
                 robot.rightMotorB.setPower(1);
             }
-            else {
+            else {*/
                 robot.leftMotorF.setPower(1);
                 robot.leftMotorB.setPower(1);
                 robot.rightMotorF.setPower(1);
                 robot.rightMotorB.setPower(1);
-            }
+            //}
         }
         // END OF DPAD DRIVE
 
-
+/*
         else if (gamepad1.right_bumper) {
                 robot.leftMotorF.setPower (1);
                 robot.leftMotorB.setPower (1);
@@ -209,7 +210,7 @@ public class OurTeleop extends OpMode {
         }
 
 
-        // START OF HUG
+        */// START OF HUG
         else if (gamepad2.left_stick_x > .1){
             DriveRobothug(gamepad2.left_stick_x);
         }
@@ -247,15 +248,15 @@ public class OurTeleop extends OpMode {
         }
 */
         //standard tank
-        else {
+      /*  else {
             robot.rightMotorF.setPower(-gamepad1.right_stick_y);
             robot.leftMotorF.setPower(-gamepad1.left_stick_y);
             robot.leftMotorB.setPower(-gamepad1.left_stick_y);
             robot.rightMotorB.setPower(-gamepad1.right_stick_y);
         }
+*/
 
-        /*
-        if (gamepad1.left_stick_y > .2 || gamepad1.left_stick_y < -.2) {
+       /*if (gamepad1.left_stick_y > .2 || gamepad1.left_stick_y < -.2) {
            y = gamepad1.left_stick_y;
         } else {
             y = 0;
@@ -288,26 +289,32 @@ public class OurTeleop extends OpMode {
         }
         if (maxvalue == 0) {
             maxvalue = 1;
-        }
+        }*/
 
-        if (gamepad1.dpad_right) {
-            robot.leftMotorF.setPower(-1);
-            robot.leftMotorB.setPower(1);
-            robot.rightMotorF.setPower(1);
-            robot.rightMotorB.setPower(-1);
-        }
-        else if (gamepad1.dpad_left) {
+        else if (gamepad1.dpad_right) {
             robot.leftMotorF.setPower(1);
             robot.leftMotorB.setPower(-1);
             robot.rightMotorF.setPower(-1);
             robot.rightMotorB.setPower(1);
         }
-        else {
+        else if (gamepad1.dpad_left) {
+            robot.leftMotorF.setPower(-1);
+            robot.leftMotorB.setPower(1);
+            robot.rightMotorF.setPower(1);
+            robot.rightMotorB.setPower(-1);
+        }
+        /*else {
             robot.rightMotorF.setPower(-1 * Range.clip(((y + x - z) / maxvalue), -1.0, 1.0));
             robot.leftMotorF.setPower(-1 * Range.clip(((y - x + z) / maxvalue), -1.0, 1.0));
             robot.leftMotorB.setPower(-1 * Range.clip(((y + x + z) / maxvalue), -1.0, 1.0));
             robot.rightMotorB.setPower(-1 * Range.clip(((y - x - z) / maxvalue), -1.0, 1.0));
         }*/
+        else {
+            robot.rightMotorF.setPower(-gamepad1.right_stick_y);
+            robot.leftMotorF.setPower(-gamepad1.left_stick_y);
+            robot.leftMotorB.setPower(-gamepad1.left_stick_y);
+            robot.rightMotorB.setPower(-gamepad1.right_stick_y);
+        }
         // Launching arm and loading mechanism code
         /*if (gamepad2.left_bumper) {
             launchAfterLoad = true;
@@ -352,7 +359,7 @@ public class OurTeleop extends OpMode {
             robot.loaderMotor.setPower(0);
         }
         // old one shot
-        /*if (gamepad2.right_bumper) {
+        if (gamepad2.right_bumper) {
             if (robot.launchingMotor.getMode() == RUN_TO_POSITION && !robot.launchingMotor.isBusy()) {
                 int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
                 robot.launchingMotor.setPower(0);
@@ -364,13 +371,13 @@ public class OurTeleop extends OpMode {
                 robot.launchingMotor.setMode(RUN_TO_POSITION);
                 robot.launchingMotor.setPower(.5);
             }
-        }*/
+        }
 
-        if (gamepad2.right_bumper && !launchInProgress) {
+        /*if (gamepad2.right_bumper && !launchInProgress) {
             launchInProgress = true;
             robot.loaderMotor.setPower(-1.0);
-            if (robot.launchingMotor.getMode() == RUN_TO_POSITION/* && !robot.launchingMotor.isBusy()*/) {
-                int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
+            if (robot.launchingMotor.getMode() == RUN_TO_POSITION/* && !robot.launchingMotor.isBusy()) {*/
+          /*      int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
                 //robot.launchingMotor.setPower(0);
                 robot.launchingMotor.setTargetPosition(oneMoreTurn);
             } else {
@@ -380,19 +387,19 @@ public class OurTeleop extends OpMode {
             }
             msAfterLaunch.reset();
             robot.launchingMotor.setPower(1.0);
-            robot.dagate.setPosition(.05);
-        }
-        if (msAfterLaunch.time() > 500 && msAfterLaunch.time() < 750 && launchInProgress) {
-            robot.dagate.setPosition(.65);
+            *//*robot.dagate.setPosition(0);
+        }*/
+        /*if (msAfterLaunch.time() > 500 && msAfterLaunch.time() < 750 && launchInProgress) {
+            robot.dagate.setPosition(.85);
         }
         if (msAfterLaunch.time() > 750 && msAfterLaunch.time() < 1000 && launchInProgress) {
             robot.launchingMotor.setPower(0.5);
         }
-        if (launchInProgress) {
-            if (msAfterLaunch.time() > 2000 || !robot.launchingMotor.isBusy()) {
-                launchInProgress = false;
-            }
-        }
+        *///if (launchInProgress) {
+            //if (msAfterLaunch.time() > 2000 || !robot.launchingMotor.isBusy()) {
+              //  launchInProgress = false;
+            //}
+        //}*/
         /* //START OF GAMEPAD 2 MANUAL OVERRIDE
         if (gamepad2.left_stick_y > .1){
             DriveSideways(.5);
@@ -419,10 +426,19 @@ public class OurTeleop extends OpMode {
         }
         //START OF GATE
         if (gamepad2.left_bumper && !launchInProgress) {
-            robot.dagate.setPosition(.05);
+            robot.dagate.setPosition(0);
         } else if (!launchInProgress) {
-            robot.dagate.setPosition(.65);
+            robot.dagate.setPosition(.85);
         }
+        //"the AAAAAAYYYYPEX of my HIIIIIIIGH" - Tobin Sanders (it's not hard. It's just Sanders)
+        if (gamepad1.right_trigger > .1 || gamepad1.left_trigger < .1){
+            robot.apexMotor.setPower(gamepad1.right_trigger);
+        }
+        else if (gamepad1.right_trigger < .1 || gamepad1.left_trigger > .1){
+            robot.apexMotor.setPower(-gamepad1.left_trigger);
+        }
+        else
+            robot.apexMotor.setPower(0);
     }
 
     @Override

@@ -20,6 +20,7 @@ public class OurHardware
     public DcMotor  rightMotorB     = null;
     public DcMotor  launchingMotor  = null;
     public DcMotor  loaderMotor     = null;
+    public DcMotor  apexMotor       = null;
 
     public Servo    beaconpusherR    = null;
     public Servo    beaconpusherL    = null;
@@ -46,6 +47,7 @@ public class OurHardware
         rightMotorB     = hwMap.dcMotor.get("right_drive_back");
         launchingMotor  = hwMap.dcMotor.get("launching_motor");
         loaderMotor     = hwMap.dcMotor.get("arm_motor");
+        apexMotor       = hwMap.dcMotor.get("apex_motor");
 
         // Set direction for all motors
         leftMotorF.setDirection(DcMotor.Direction.FORWARD);
@@ -54,6 +56,7 @@ public class OurHardware
         rightMotorB.setDirection(DcMotor.Direction.REVERSE);
         launchingMotor.setDirection(DcMotor.Direction.REVERSE);
         loaderMotor.setDirection(DcMotor.Direction.REVERSE);
+        apexMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         leftMotorF.setPower(0);
@@ -62,6 +65,7 @@ public class OurHardware
         rightMotorB.setPower(0);
         launchingMotor.setPower(0);
         loaderMotor.setPower(0);
+        apexMotor.setPower(0);
 
         // Set (almost) all motors to run with encoders.
         leftMotorF.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -70,13 +74,15 @@ public class OurHardware
         rightMotorB.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         launchingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        // This motor does not use an encoder
+        // These motors does not use encoders
         loaderMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        apexMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Define and initialize all installed servos.
         beaconpusherR = hwMap.servo.get("right_beacon");
         beaconpusherL = hwMap.servo.get("left_beacon");
         dagate = hwMap.servo.get("gate_beacon");
+        dagate.setPosition(.85);
         beaconpusherR.setPosition(0.1);
         beaconpusherL.setPosition(0.9);
     }
