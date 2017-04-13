@@ -376,8 +376,8 @@ public class OurTeleop extends OpMode {
         /*if (gamepad2.right_bumper && !launchInProgress) {
             launchInProgress = true;
             robot.loaderMotor.setPower(-1.0);
-            if (robot.launchingMotor.getMode() == RUN_TO_POSITION/* && !robot.launchingMotor.isBusy()) {*/
-          /*      int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
+            if (robot.launchingMotor.getMode() == RUN_TO_POSITION/* && !robot.launchingMotor.isBusy()) {
+                int oneMoreTurn = robot.launchingMotor.getTargetPosition() + 3360;
                 //robot.launchingMotor.setPower(0);
                 robot.launchingMotor.setTargetPosition(oneMoreTurn);
             } else {
@@ -387,9 +387,9 @@ public class OurTeleop extends OpMode {
             }
             msAfterLaunch.reset();
             robot.launchingMotor.setPower(1.0);
-            *//*robot.dagate.setPosition(0);
-        }*/
-        /*if (msAfterLaunch.time() > 500 && msAfterLaunch.time() < 750 && launchInProgress) {
+            robot.dagate.setPosition(0);
+        }
+        if (msAfterLaunch.time() > 500 && msAfterLaunch.time() < 750 && launchInProgress) {
             robot.dagate.setPosition(.85);
         }
         if (msAfterLaunch.time() > 750 && msAfterLaunch.time() < 1000 && launchInProgress) {

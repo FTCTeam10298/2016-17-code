@@ -220,14 +220,14 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             if (DoTask("Go to beacon 1", runmode)) {
                 if (beacon > 0) {
                     if (alliance == Alliance.ALLIANCE_BLUE && startposition == StartPosition.STARTPOSITION1) {
-                        DriveRobotTurn(.2, 60);
-                        DriveRobotPosition(-.3, -55, FIND_LINE_FALSE);
-                        DriveRobotTurn(.25, 140);
-                        DriveSidewaysTime(1500, -1);
-                        DriveRobotPosition(-.5, -4, FIND_LINE_FALSE);
-                        DriveRobothug(0.15, 20, FIND_LINE_TRUE);
+                        DriveRobotTurn(.25, 45);
+                        DriveRobotPosition(.75, 80, FIND_LINE_FALSE);
+                        DriveRobotTurn(-.25, -40);
+                        DriveSidewaysTime(750, 1);
+                        DriveRobothug(0.125, 35, FIND_LINE_TRUE);
+                        DriveRobothug(-.125, -3, FIND_LINE_TRUE);
                     } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
-                        DriveRobotTurn(-.2, -45);
+                        DriveRobotTurn(-.25, -45);
                         DriveRobotPosition(.75, 75,FIND_LINE_FALSE);
                         DriveRobotTurn(-.25, -140);
                         DriveSidewaysTime(1250, 1);
@@ -243,15 +243,9 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             if (DoTask("Drive to Beacon 2", runmode)) {
                 if (beacon == 2) {
                     if (alliance == Alliance.ALLIANCE_BLUE) {
-                        if (runLonger) {
-                            DriveRobothug(.25, 49, FIND_LINE_FALSE);
-
-                        } else {
-                            DriveRobothug(.25, 42, FIND_LINE_FALSE);
-
-                        }
-                        DriveSidewaysTime(500, -.5);
-                        DriveRobothug(.15, 25, FIND_LINE_TRUE);
+                        DriveRobothug(-.75, -30, FIND_LINE_FALSE);
+                        DriveSidewaysTime(1000, 1);
+                        DriveRobothug(-.125, -25, FIND_LINE_TRUE);
                     } else {
                         DriveRobothug(.7, 35, FIND_LINE_FALSE);
                         DriveSidewaysTime(500, 1);
@@ -285,18 +279,17 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                     DriveSidewaysTime(1000, -.5);
                     DriveRobotPosition(.75, -80, FIND_LINE_FALSE);
                 } else if (endposition == EndPosition.ENDCORNER && beacon == 2) {
-                    DriveSidewaysTime(1000, -.5);
-                    DriveRobotPosition(.75, -48, FIND_LINE_FALSE);
+                    DriveSidewaysTime(1000, -.75);
+                    DriveRobotPosition(-.75, -40, FIND_LINE_FALSE);
                 } else if (endposition == EndPosition.ENDCENTER && beacon == 1) {
                     DriveSidewaysTime(1000, -.5);
                     DriveRobotTurn(0.5, 13);
                     DriveRobotPosition(.6, -60, FIND_LINE_FALSE);
                 } else if (endposition == EndPosition.ENDCENTER && beacon == 2) {
-                    DriveSidewaysTime(2000, -.5);
-                    DriveRobotTurn(0.5, 0);
-                    DriveRobotPosition(.5, 15, FIND_LINE_FALSE);
-                    DriveSidewaysTime(1500, -.5);
-                    DriveRobotPosition(.5, -30, FIND_LINE_FALSE);
+                    DriveRobothug(1, 40, FIND_LINE_FALSE);
+                    DriveSidewaysTime(1000, -1);
+                    DriveRobotTurn(1, 40);
+                    DriveRobotPosition(-1, -55, FIND_LINE_FALSE);
                 }
             }
         } else if (startposition == StartPosition.STARTPOSITION2) {
@@ -665,15 +658,15 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         {
             robot.leftMotorF.setPower(-power*powerRatio);
             robot.leftMotorB.setPower(power*powerRatio);
-            robot.rightMotorB.setPower(-power*powerRatio);
             robot.rightMotorF.setPower(power*powerRatio);
+            robot.rightMotorB.setPower(-power*powerRatio);
         }
         else // Drive left
         {
+            robot.leftMotorF.setPower(-power*powerRatio);
+            robot.leftMotorB.setPower(power*powerRatio);
             robot.rightMotorF.setPower(power*powerRatio);
             robot.rightMotorB.setPower(-power*powerRatio);
-            robot.leftMotorB.setPower(power*powerRatio);
-            robot.leftMotorF.setPower(-power*powerRatio);
         }
         // Continue driving for the specified amount of time, then stop
         sleep(time);
