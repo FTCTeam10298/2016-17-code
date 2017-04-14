@@ -59,51 +59,39 @@ public class Auto_Shoot_Only extends LinearOpMode {
          */
         robot.init(hardwareMap);
 
-        // claw init
-//        robot.claw.setPosition(.3);
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Ready to run");    //
+        telemetry.addData("Status", "Ready to run");
         telemetry.update();
 
-        robot.init(hardwareMap);
-        robot.loaderMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.loaderMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.loaderMotor.setTargetPosition(0);
-        robot.loaderMotor.setPower(0.0);
-
-        robot.init(hardwareMap);
         robot.launchingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.launchingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.launchingMotor.setTargetPosition(0);
         robot.launchingMotor.setPower(0.0);
-//        robot.loaderMotor.setMaxSpeed(1000);
-//        robot.loaderMotor.setMaxSpeed(1000);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
-        //Nutn but net
-
-        telemetry.addData("encoder:", "%d", robot.launchingMotor.getCurrentPosition());
-        robot.launchingMotor.setTargetPosition(3350);
-        robot.launchingMotor.setPower(.5);
-        while (robot.launchingMotor.isBusy()) {
-            updateTelemetry(telemetry);
-        }
-        robot.launchingMotor.setPower(0.0);
-
         robot.loaderMotor.setPower(1);
-        sleep(1400);
-        robot.loaderMotor.setPower(0);
-        // sleep(1000);
 
-        robot.launchingMotor.setTargetPosition(3350 * 2);
+        //Nutn but net
+        telemetry.addData("encoder:", "%d", robot.launchingMotor.getCurrentPosition());
+        robot.launchingMotor.setTargetPosition(3360);
         robot.launchingMotor.setPower(.5);
-        while (robot.launchingMotor.isBusy()) {
-            updateTelemetry(telemetry);
-        }
-        robot.launchingMotor.setPower(0.0);
+        sleep(2000);
+        robot.launchingMotor.setPower(0);
+
+        // Load ball
+        robot.dagate.setPosition(0);
+        sleep(500);
+        robot.dagate.setPosition(.85);
+        sleep(500);
+
+        //Nutn but net
+        robot.launchingMotor.setTargetPosition(3360 * 2);
+        robot.launchingMotor.setPower(.5);
+        sleep(2000);
+        robot.launchingMotor.setPower(0);
     }
 }

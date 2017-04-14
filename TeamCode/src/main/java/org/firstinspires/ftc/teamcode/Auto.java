@@ -126,7 +126,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         dashboard = HalDashboard.createInstance(telemetry);
 
         // Initialize gyro -------------------------------------------------------------------------
-      /*  dashboard.displayPrintf(0, "Calibrating Gyro");
+        /*dashboard.displayPrintf(0, "Calibrating Gyro");
         gyro = (ModernRoboticsI2cGyro) hardwareMap.gyroSensor.get("gyro");
         gyro.calibrate();
 
@@ -135,13 +135,12 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
             sleep(50);
             idle();
         }
-        gyro.resetZAxisIntegrator();
-*/
+        gyro.resetZAxisIntegrator();*/
+
         // Initialize color sensor -----------------------------------------------------------------
         dashboard.displayPrintf(0, "Initializing Color Sensors");
         colorR = (ModernRoboticsI2cColorSensor) hardwareMap.colorSensor.get("colorR");
         colorR.setI2cAddress(I2cAddr.create7bit(0x1f));
-        //sleep(1000);
         colorL = (ModernRoboticsI2cColorSensor) hardwareMap.colorSensor.get("colorL");
         colorL.setI2cAddress(I2cAddr.create7bit(0x1e));
         colorR.enableLed(false);
@@ -202,19 +201,14 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         // Pause the program for the selected delay period
         sleep(delay);
 
-        // If we are not pressing the second beacon, we have extra time,
-        // so run the ball loader longer to increase chances of the ball loading correctly
-        if (beacon < 2) {
-            longBallLoad = true;
-        }
-
         if (startposition == StartPosition.STARTPOSITION1) {
             if (DoTask("Setup Ball Launch", runmode)) {
                 DriveRobotPosition(.3, 13, FIND_LINE_FALSE);
-        }
-        if (DoTask("Ball Launch", runmode))
+            }
+            if (DoTask("Ball Launch", runmode)) {
                 sleep(250);
                 BallLaunch(balls);
+            }
 
             // go to beacon
             if (DoTask("Go to beacon 1", runmode)) {
@@ -306,17 +300,17 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 sleep(500);
                 //DriveRobotPosition(.5, 65, FIND_LINE_FALSE);
             }*/
-            if (alliance == Alliance.ALLIANCE_BLUE && endposition == EndPosition.ENDCORNER){
+            if (alliance == Alliance.ALLIANCE_BLUE && endposition == EndPosition.ENDCORNER) {
                 DriveRobotTurn(.25, 40);
                 DriveRobotPosition(-.75, -70, FIND_LINE_FALSE);
                 sleep(500);
             }
-            else if (alliance == Alliance.ALLIANCE_RED && endposition == EndPosition.ENDCORNER){
+            else if (alliance == Alliance.ALLIANCE_RED && endposition == EndPosition.ENDCORNER) {
                 DriveRobotTurn(0.25, -140);
                 DriveRobotPosition(.75, -70, FIND_LINE_FALSE);
                 sleep(500);
             }
-            else if (endposition == EndPosition.ENDCENTER){
+            else if (endposition == EndPosition.ENDCENTER) {
                 DriveRobotPosition(1, 35, FIND_LINE_FALSE);
                 sleep(500);
             }
@@ -464,7 +458,6 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                 robot.dagate.setPosition(0);
                 sleep(500);
                 robot.dagate.setPosition(.85);
-                // End load ball
             }
 
             // Display position data
@@ -1135,30 +1128,30 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         FtcChoiceMenu beaconsMenu = new FtcChoiceMenu("Beacons:", ballMenu, this);
         FtcChoiceMenu endpositionMenu = new FtcChoiceMenu("End Position:", beaconsMenu, this);
 
-        modeMenu.addChoice("Auto", RunMode.RUNMODE_AUTO, allianceMenu);
-        modeMenu.addChoice("Debug", RunMode.RUNMODE_DEBUG, allianceMenu);
+        modeMenu.addChoice("Auto", RunMode.RUNMODE_AUTO, true, allianceMenu);
+        modeMenu.addChoice("Debug", RunMode.RUNMODE_DEBUG, false, allianceMenu);
 
-        allianceMenu.addChoice("Red", Alliance.ALLIANCE_RED, delayMenu);
-        allianceMenu.addChoice("Blue", Alliance.ALLIANCE_BLUE, delayMenu);
+        allianceMenu.addChoice("Red", Alliance.ALLIANCE_RED, true, delayMenu);
+        allianceMenu.addChoice("Blue", Alliance.ALLIANCE_BLUE, false, delayMenu);
 
-        delayMenu.addChoice("0 seconds", 0, startpositionMenu);
-        delayMenu.addChoice("5 seconds", 5000, startpositionMenu);
-        delayMenu.addChoice("10 seconds", 10000, startpositionMenu);
-        delayMenu.addChoice("15 seconds", 15000, startpositionMenu);
+        delayMenu.addChoice("0 seconds", 0, true, startpositionMenu);
+        delayMenu.addChoice("5 seconds", 5000, false, startpositionMenu);
+        delayMenu.addChoice("10 seconds", 10000, false, startpositionMenu);
+        delayMenu.addChoice("15 seconds", 15000, false, startpositionMenu);
 
-        startpositionMenu.addChoice("1", StartPosition.STARTPOSITION1, ballMenu);
-        startpositionMenu.addChoice("2", StartPosition.STARTPOSITION2, ballMenu);
+        startpositionMenu.addChoice("1", StartPosition.STARTPOSITION1, true, ballMenu);
+        startpositionMenu.addChoice("2", StartPosition.STARTPOSITION2, false, ballMenu);
 
-        ballMenu.addChoice("0 balls", 0, beaconsMenu);
-        ballMenu.addChoice("1 ball", 1, beaconsMenu);
-        ballMenu.addChoice("2 balls", 2, beaconsMenu);
+        ballMenu.addChoice("0 balls", 0, false, beaconsMenu);
+        ballMenu.addChoice("1 ball", 1, false, beaconsMenu);
+        ballMenu.addChoice("2 balls", 2, true, beaconsMenu);
 
-        beaconsMenu.addChoice("0 beacons", 0, endpositionMenu);
-        beaconsMenu.addChoice("1 beacon", 1, endpositionMenu);
-        beaconsMenu.addChoice("2 beacons", 2, endpositionMenu);
+        beaconsMenu.addChoice("0 beacons", 0, false, endpositionMenu);
+        beaconsMenu.addChoice("1 beacon", 1, false, endpositionMenu);
+        beaconsMenu.addChoice("2 beacons", 2, true, endpositionMenu);
 
-        endpositionMenu.addChoice("Corner", EndPosition.ENDCORNER, null);
-        endpositionMenu.addChoice("Center", EndPosition.ENDCENTER, null);
+        endpositionMenu.addChoice("Corner", EndPosition.ENDCORNER, false, null);
+        endpositionMenu.addChoice("Center", EndPosition.ENDCENTER, true, null);
 
 
         FtcMenu.walkMenuTree(modeMenu, this);
