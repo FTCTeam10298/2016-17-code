@@ -225,13 +225,13 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                         DriveRobotTurn(-.25, -40);
                         DriveSidewaysTime(750, 1);
                         DriveRobothug(0.125, 35, FIND_LINE_TRUE);
-                        DriveRobothug(-.125, -3, FIND_LINE_TRUE);
                     } else if (alliance == Alliance.ALLIANCE_RED && startposition == StartPosition.STARTPOSITION1) {
                         DriveRobotTurn(-.25, -45);
                         DriveRobotPosition(.75, 75,FIND_LINE_FALSE);
                         DriveRobotTurn(-.25, -140);
                         DriveSidewaysTime(1250, 1);
                         DriveRobothug(-0.15, -30, FIND_LINE_TRUE);
+                        DriveRobothug(.125, 3, FIND_LINE_TRUE);
                     }
                 }
             }
@@ -246,6 +246,7 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
                         DriveRobothug(-.75, -30, FIND_LINE_FALSE);
                         DriveSidewaysTime(1000, 1);
                         DriveRobothug(-.125, -25, FIND_LINE_TRUE);
+                        DriveRobothug(.125, 3, FIND_LINE_TRUE);
                     } else {
                         DriveRobothug(.7, 35, FIND_LINE_FALSE);
                         DriveSidewaysTime(500, 1);
@@ -371,10 +372,16 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         if (alliance == Alliance.ALLIANCE_BLUE && valueblueR > valueredR) {
 
             while (colorL.red() > colorL.blue() && counter < tries){
+                if (2*(counter%2)-1 == -1 && counter > 0){
+                    DriveRobothug(-.15, -3, FIND_LINE_TRUE);
+                }
+                else {
+                    DriveRobothug(.15, 3, FIND_LINE_TRUE);
+                }
+
                 robot.beaconpusherR.setPosition(1);
                 sleep(1000);
                 robot.beaconpusherR.setPosition(.1);
-                sleep(250);
                 counter = counter +1;
             }
 
@@ -382,10 +389,16 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         else if (alliance == Alliance.ALLIANCE_BLUE && valueblueL > valueredL) {
 
             while (colorR.red() > colorR.blue() && counter < tries){
+                if (2*(counter%2)-1 == -1 && counter > 0){
+                    DriveRobothug(-.15, -3, FIND_LINE_TRUE);
+                }
+                else {
+                    DriveRobothug(.15, 3, FIND_LINE_TRUE);
+                }
+
                 robot.beaconpusherL.setPosition(0);
                 sleep(1000);
                 robot.beaconpusherL.setPosition(1);
-                sleep(250);
                 counter = counter +1;
             }
 
@@ -393,10 +406,16 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         else if (alliance == Alliance.ALLIANCE_RED && valueredL > valueblueL) {
 
             while (colorR.blue() > colorR.red() && counter < tries){
+                if (2*(counter%2)-1 == -1 && counter > 0){
+                    DriveRobothug(-.15, -3, FIND_LINE_TRUE);
+                }
+                else {
+                    DriveRobothug(.15, 3, FIND_LINE_TRUE);
+                }
+
                 robot.beaconpusherL.setPosition(0);
                 sleep(1000);
                 robot.beaconpusherL.setPosition(1);
-                sleep(250);
                 counter = counter +1;
             }
 
@@ -404,10 +423,31 @@ public class Auto extends LinearOpMode implements FtcMenu.MenuButtons {
         else if (alliance == Alliance.ALLIANCE_RED && valueblueR < valueredR) {
 
             while (colorL.red() < colorL.blue() && counter < tries){
+                if (2*(counter%2)-1 == -1 && counter > 0){
+                    DriveRobothug(-.15, -3, FIND_LINE_TRUE);
+                }
+                else {
+                    DriveRobothug(.15, 3, FIND_LINE_TRUE);
+                }
+
                 robot.beaconpusherR.setPosition(1);
                 sleep(1000);
                 robot.beaconpusherR.setPosition(.1);
-                sleep(250);
+                counter = counter +1;
+            }
+
+        }
+        else if ((alliance == Alliance.ALLIANCE_BLUE && valueredR > valueblueR && valueredL > valueblueL) ||
+                (alliance == Alliance.ALLIANCE_RED && valueredR < valueblueR && valueredL < valueblueL)){
+
+            while (counter < 5 && ((alliance == Alliance.ALLIANCE_BLUE && colorR.red() > colorR.blue()) ||
+                    (alliance == Alliance.ALLIANCE_RED && colorR.red() < colorR.blue()))){
+                robot.beaconpusherR.setPosition(1);
+                robot.beaconpusherL.setPosition(0);
+                sleep(490);
+                robot.beaconpusherR.setPosition(0);
+                robot.beaconpusherL.setPosition(1);
+                sleep(490);
                 counter = counter +1;
             }
 
